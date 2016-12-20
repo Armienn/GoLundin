@@ -19376,7 +19376,7 @@ $packages["github.com/Armienn/GoLanguage/phonetics"] = (function() {
 	$pkg.$init = $init;
 	return $pkg;
 })();
-$packages["github.com/Armienn/GoLundin/gopher"] = (function() {
+$packages["github.com/Armienn/GoLundin/files/js/golanguage"] = (function() {
 	var $pkg = {}, $init, phonetics, js, rand, time, funcType, main, generateSomePhonetics;
 	phonetics = $packages["github.com/Armienn/GoLanguage/phonetics"];
 	js = $packages["github.com/gopherjs/gopherjs/js"];
@@ -19428,10 +19428,10 @@ $packages["github.com/Armienn/GoLundin/gopher"] = (function() {
 	return $pkg;
 })();
 $synthesizeMethods();
-var $mainPkg = $packages["github.com/Armienn/GoLundin/gopher"];
+var $mainPkg = $packages["github.com/Armienn/GoLundin/files/js/golanguage"];
 $packages["runtime"].$init();
 $go($mainPkg.$init, [], true);
 $flushConsole();
 
 }).call(this);
-//# sourceMappingURL=gopher.js.map
+//# sourceMappingURL=golanguage.js.map

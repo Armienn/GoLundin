@@ -7,20 +7,52 @@ import (
 
 	"encoding/json"
 
+	"strings"
+
 	"github.com/Armienn/GoServer"
 )
 
 func main() {
 	server := goserver.NewServer(true)
 	server.AddHandlerFrom(goserver.HandlerInfo{"/login", loginHandler, true})
-	server.AddHandler("/js/", jsHandler)
-	server.AddHandlerFrom(goserver.HandlerInfo{"/css/", cssHandler, true})
-	server.AddHandler("/", viewHandler)
+	server.AddHandlerFrom(goserver.HandlerInfo{"/files/", fileHandler, true})
+	server.AddHandler("/test/", viewHandler)
+	server.AddHandler("/sjov/", sjovHandler)
+	server.AddHandler("/", mainHandler)
 	users := loadUsers()
 	for _, user := range users {
 		server.AddUser(user.Name, user.Password)
 	}
 	server.Serve()
+}
+
+type MainData struct {
+	Scripts []string
+	User    string
+}
+
+func NewMainData(user string, scripts ...string) *MainData {
+	return &MainData{scripts, user}
+}
+
+func mainHandler(server *goserver.Server, w http.ResponseWriter, r *http.Request, path string, session goserver.Session, user interface{}) {
+	data := NewMainData(user.(string))
+	temp, err := template.ParseFiles("templates/frontpage.html", "templates/base-start.html", "templates/base-end.html", "templates/header.html")
+	if err != nil {
+		w.Write([]byte("Fejl: " + err.Error()))
+	} else {
+		temp.Execute(w, data)
+	}
+}
+
+func sjovHandler(server *goserver.Server, w http.ResponseWriter, r *http.Request, path string, session goserver.Session, user interface{}) {
+	data := NewMainData(user.(string), "/files/js/golanguage/golanguage.js")
+	temp, err := template.ParseFiles("test.html", "templates/base-start.html", "templates/base-end.html", "templates/header.html")
+	if err != nil {
+		w.Write([]byte("Fejl: " + err.Error()))
+	} else {
+		temp.Execute(w, data)
+	}
 }
 
 func viewHandler(server *goserver.Server, w http.ResponseWriter, r *http.Request, path string, session goserver.Session, user interface{}) {
@@ -39,15 +71,15 @@ func viewHandler(server *goserver.Server, w http.ResponseWriter, r *http.Request
 	}
 }
 
-func jsHandler(server *goserver.Server, w http.ResponseWriter, r *http.Request, path string, session goserver.Session, user interface{}) {
-	file, _ := ioutil.ReadFile("gopher/" + path)
-	w.Write(file)
-}
-
-func cssHandler(server *goserver.Server, w http.ResponseWriter, r *http.Request, path string, session goserver.Session, user interface{}) {
-	w.Header().Set("Content-Type", "text/css")
-	w.WriteHeader(http.StatusOK)
-	file, _ := ioutil.ReadFile("css/" + path)
+func fileHandler(server *goserver.Server, w http.ResponseWriter, r *http.Request, path string, session goserver.Session, user interface{}) {
+	if strings.HasSuffix(path, ".css") {
+		w.Header().Set("Content-Type", "text/css")
+		w.WriteHeader(http.StatusOK)
+	} else if user == nil {
+		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+		return
+	}
+	file, _ := ioutil.ReadFile("files/" + path)
 	w.Write(file)
 }
 
