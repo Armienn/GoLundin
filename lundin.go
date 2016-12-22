@@ -16,7 +16,6 @@ func main() {
 	server := goserver.NewServer(true)
 	server.AddHandlerFrom(goserver.HandlerInfo{"/login", loginHandler, true})
 	server.AddHandlerFrom(goserver.HandlerInfo{"/files/", fileHandler, true})
-	server.AddHandler("/test/", viewHandler)
 	server.AddHandler("/sjov/", sjovHandler)
 	server.AddHandler("/", mainHandler)
 	users := loadUsers()
@@ -48,22 +47,6 @@ func mainHandler(server *goserver.Server, w http.ResponseWriter, r *http.Request
 func sjovHandler(server *goserver.Server, w http.ResponseWriter, r *http.Request, path string, session goserver.Session, user interface{}) {
 	data := NewMainData(user.(string), "/files/js/golanguage/golanguage.js")
 	temp, err := template.ParseFiles("test.html", "templates/base-start.html", "templates/base-end.html", "templates/header.html")
-	if err != nil {
-		w.Write([]byte("Fejl: " + err.Error()))
-	} else {
-		temp.Execute(w, data)
-	}
-}
-
-func viewHandler(server *goserver.Server, w http.ResponseWriter, r *http.Request, path string, session goserver.Session, user interface{}) {
-	data := struct{ Count int }{0}
-	value, ok := session.Get("musle")
-	if ok {
-		data.Count = value.(int)
-	}
-	data.Count++
-	session.Set("musle", data.Count)
-	temp, err := template.ParseFiles("test.html")
 	if err != nil {
 		w.Write([]byte("Fejl: " + err.Error()))
 	} else {

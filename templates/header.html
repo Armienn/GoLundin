@@ -1,15 +1,11 @@
 {{define "header"}}
 <nav class="lundin-nav">
-	<div style="height: calc(100% - 1px);">
-		<a style="float: right; margin: 1em; font-size: 1em;" href="/index.php?page=settings">Indstillinger</a>
-		<h3 style="float: right; margin: 1em; color: #4864c1">Hej {{.User}}</h3>
-		<h1>Familien Lundin</h1>
-		<a href="/">Hjem</a>
-		<a href="/sjov">Kodesjov</a>
-		<a href="/xbmc-video-server">Video Server</a>
-		<a href="/logout">Log ud</a>
-	</div>
-	<div style="height: 1px; background-color: #4864c1;">
-	</div>
+	<a style="float: right; margin: 1rem; font-size: 1rem;" href="/logout">Log ud</a>
+	<h3 style="float: right; margin: 1rem; padding-top: 0.25rem;">Hej {{.User}}</h3>
+	<h1>Familien Lundin</h1>
+	<a href="/">Hjem</a>
+	<a href="/sjov">Kodesjov</a>
+	<a href="/xbmc-video-server">Video Server</a>
+	<a href="/settings">Indstillinger</a>
 </nav>
 {{end}}
