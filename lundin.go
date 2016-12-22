@@ -36,7 +36,7 @@ func NewMainData(user string, scripts ...string) *MainData {
 
 func mainHandler(server *goserver.Server, w http.ResponseWriter, r *http.Request, path string, session goserver.Session, user interface{}) {
 	data := NewMainData(user.(string))
-	temp, err := template.ParseFiles("templates/frontpage.html", "templates/base-start.html", "templates/base-end.html", "templates/header.html")
+	temp, err := template.ParseFiles("pages/frontpage.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html")
 	if err != nil {
 		w.Write([]byte("Fejl: " + err.Error()))
 	} else {
@@ -46,7 +46,10 @@ func mainHandler(server *goserver.Server, w http.ResponseWriter, r *http.Request
 
 func sjovHandler(server *goserver.Server, w http.ResponseWriter, r *http.Request, path string, session goserver.Session, user interface{}) {
 	data := NewMainData(user.(string), "/files/js/golanguage/golanguage.js")
-	temp, err := template.ParseFiles("test.html", "templates/base-start.html", "templates/base-end.html", "templates/header.html")
+	if len(path) == 0 {
+		path = "golanguage"
+	}
+	temp, err := template.ParseFiles("pages/"+path+".html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/kode-header.html")
 	if err != nil {
 		w.Write([]byte("Fejl: " + err.Error()))
 	} else {

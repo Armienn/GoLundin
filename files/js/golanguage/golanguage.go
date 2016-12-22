@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	js.Global.Get("gobutton").Set("onclick", generateSomePhonetics)
+	js.Global.Get("enterbutton").Set("onclick", generateSomePhonetics)
 }
 
 /*func printAlphabet(lang *phonetics.Phonetics, representation *phonetics.Phonetics) {
@@ -44,5 +44,5 @@ func generateSomePhonetics() {
 		text += ipa.GetWordRepresentation(word) + "</br>"
 	}
 
-	js.Global.Get("mulle").Set("innerHTML", text)
+	js.Global.Get("outputText").Set("innerHTML", text)
 }

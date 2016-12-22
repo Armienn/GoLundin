@@ -19385,7 +19385,7 @@ $packages["github.com/Armienn/GoLundin/files/js/golanguage"] = (function() {
 	funcType = $funcType([], [], false);
 	main = function() {
 		var $ptr;
-		$global.gobutton.onclick = $externalize(generateSomePhonetics, funcType);
+		$global.enterbutton.onclick = $externalize(generateSomePhonetics, funcType);
 	};
 	generateSomePhonetics = function() {
 		var $ptr, _r, _r$1, dansk, i, ipa, lang, text, word, $s, $r;
@@ -19406,7 +19406,7 @@ $packages["github.com/Armienn/GoLundin/files/js/golanguage"] = (function() {
 			text = text + (ipa.GetWordRepresentation(word) + "</br>");
 			i = i + (1) >> 0;
 		/* } */ $s = 3; continue; case 4:
-		$global.mulle.innerHTML = $externalize(text, $String);
+		$global.outputText.innerHTML = $externalize(text, $String);
 		$s = -1; return;
 		return;
 		/* */ } return; } if ($f === undefined) { $f = { $blk: generateSomePhonetics }; } $f.$ptr = $ptr; $f._r = _r; $f._r$1 = _r$1; $f.dansk = dansk; $f.i = i; $f.ipa = ipa; $f.lang = lang; $f.text = text; $f.word = word; $f.$s = $s; $f.$r = $r; return $f;

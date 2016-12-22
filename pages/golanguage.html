@@ -1,0 +1,15 @@
+{{template "base-start" .}}
+{{template "header" .}}
+<div class="main-body">
+{{template "kode-header"}}
+
+<div style="float:left; padding: 1em; margin-left: 21em; max-width: calc(100% - 23em); min-width: calc(100% - 23em); min-height: calc(100vh - 2em); background-color: #ffeedd;">
+	<h3 id="h3program" style="font-weight: normal; margin-bottom: 0.5em;">Sprogting:</h3>
+	<input type="text" id="inputText" onkeydown="if (event.keyCode == 13) document.getElementById('enterbutton').click()" style="width: 20em;"/>
+	<button id="enterbutton">Start</button>
+	<button onclick="document.getElementById('outputText').innerHTML = ''">Clear</button>
+	<p id="outputText"></p>
+</div>
+
+</div>
+{{template "base-end" .}}
