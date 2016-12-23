@@ -85,14 +85,22 @@ input{
 	background-color: #ffeedd;
 }
 
-.lundin-thread-link {
-	text-decoration:none;
+.thread-entry {
+    height: 5rem;
+    display: table;
+    box-sizing: border-box;
+    border-bottom: 1px solid darkred;
+    width: 100vw;
 }
 
-.lundin-thread-link-div {
-	background-color: #dfe6ff;
-	margin: 0.5rem;
-	padding: 0.5rem;
+.thread-title {
+    margin: 0.5rem;
+    height: 2rem;
+    font-size: 1.5rem;
+}
+
+.thread-body {
+    margin-left: 1rem;
 }
 
 .fancy-link {

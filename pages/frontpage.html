@@ -1,6 +1,16 @@
 {{template "base-start" .}}
 {{template "header" .}}
 <div class="main-body">
-body
+	{{range $index, $thread := .Threads}}
+		<div class="thread-entry" onclick="location.href='/beskeder/{{$thread.ID}}'">
+			<div class="thread-title">
+				{{$thread.Title}}
+			</div>
+			
+			<div class="thread-body">
+				{{$thread.MainMessage}}
+			</div>
+		</div>
+	{{end}}
 </div>
 {{template "base-end" .}}

@@ -30,12 +30,41 @@ type MainData struct {
 	User    string
 }
 
+type ForumData struct {
+	MainData
+	Threads []Thread
+}
+
+func NewForumData(threads []Thread, user string, scripts ...string) *ForumData {
+	return &ForumData{MainData{scripts, user}, threads}
+}
+
+type Thread struct {
+	ID          int
+	Title       string
+	MainMessage string
+	Responses   []string
+}
+
+func loadThreads() []Thread {
+	file, err := ioutil.ReadFile("threads.json")
+	if err != nil {
+		return nil
+	}
+	var threads []Thread
+	err = json.Unmarshal(file, &threads)
+	if err != nil {
+		return nil
+	}
+	return threads
+}
+
 func NewMainData(user string, scripts ...string) *MainData {
 	return &MainData{scripts, user}
 }
 
 func mainHandler(server *goserver.Server, w http.ResponseWriter, r *http.Request, path string, session goserver.Session, user interface{}) {
-	data := NewMainData(user.(string))
+	data := NewForumData(loadThreads(), user.(string))
 	temp, err := template.ParseFiles("pages/frontpage.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html")
 	if err != nil {
 		w.Write([]byte("Fejl: " + err.Error()))
