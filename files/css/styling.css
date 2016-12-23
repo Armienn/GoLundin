@@ -91,6 +91,7 @@ input{
     box-sizing: border-box;
     border-bottom: 1px solid darkred;
     width: 100vw;
+		cursor: pointer;
 }
 
 .thread-title {
