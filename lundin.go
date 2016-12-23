@@ -17,6 +17,7 @@ func main() {
 	server.AddHandlerFrom(goserver.HandlerInfo{"/login", loginHandler, true})
 	server.AddHandlerFrom(goserver.HandlerInfo{"/files/", fileHandler, true})
 	server.AddHandler("/sjov/", sjovHandler)
+	server.AddHandler("/beskeder/", threadHandler)
 	server.AddHandler("/", mainHandler)
 	users := loadUsers()
 	for _, user := range users {

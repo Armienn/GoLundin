@@ -1,0 +1,14 @@
+{{template "base-start" .}}
+{{template "header" .}}
+<div class="main-body">
+	<div class="thread-entry" onclick="location.href='/beskeder/{{.ID}}'">
+		<div class="thread-title">
+			{{.Title}}
+		</div>
+		
+		<div class="thread-body">
+			{{.MainMessage}}
+		</div>
+	</div>
+</div>
+{{template "base-end" .}}
