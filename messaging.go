@@ -40,8 +40,8 @@ func loadThreads() []Thread {
 	return threads
 }
 
-func threadHandler(server *goserver.Server, w http.ResponseWriter, r *http.Request, path string, session goserver.Session, user interface{}) {
-	id, err := strconv.Atoi(path)
+func threadHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
+	id, err := strconv.Atoi(info.Path)
 	threads := loadThreads()
 	var thread Thread
 	for _, thread = range threads {
@@ -49,7 +49,7 @@ func threadHandler(server *goserver.Server, w http.ResponseWriter, r *http.Reque
 			break
 		}
 	}
-	data := NewThreadData(thread, user.(string))
+	data := NewThreadData(thread, info.User())
 	temp, err := template.ParseFiles("pages/thread.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html")
 	if err != nil {
 		w.Write([]byte("Fejl: " + err.Error()))

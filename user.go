@@ -28,11 +28,11 @@ func loadUsers() []User {
 	return users
 }
 
-func loginHandler(server *goserver.Server, w http.ResponseWriter, r *http.Request, path string, session goserver.Session, user interface{}) {
-	if r.Method == "GET" {
-		returnLoginPage(w)
-		return
-	}
+func loginGetHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
+	returnLoginPage(w)
+}
+
+func loginPostHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
 	err := r.ParseForm()
 	if err != nil {
 		returnLoginPage(w)
@@ -40,7 +40,7 @@ func loginHandler(server *goserver.Server, w http.ResponseWriter, r *http.Reques
 	}
 	users, _ := r.Form["user"]
 	passwords, _ := r.Form["password"]
-	if len(users) > 0 && len(passwords) > 0 && server.Login(users[0], passwords[0], session) {
+	if len(users) > 0 && len(passwords) > 0 && info.Server.Login(users[0], passwords[0], info.Session) {
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
