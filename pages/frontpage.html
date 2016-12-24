@@ -12,5 +12,10 @@
 			</div>
 		</div>
 	{{end}}
+	<form action="/beskeder" method="post">
+			<input type="text" id="title" name="title" style="width: 20em;"/>
+			<input type="text" id="message" name="message" style="width: 20em;"/>
+			<input type="submit" name="beskeder" value="Gem"/>
+	</form>
 </div>
 {{template "base-end" .}}

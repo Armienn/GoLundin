@@ -17,7 +17,8 @@ func main() {
 	server.AddHandlerFrom(goserver.HandlerInfo{"/login", loginGetHandler, loginPostHandler, true})
 	server.AddHandlerFrom(goserver.HandlerInfo{"/files/", fileHandler, nil, true})
 	server.AddHandler("/sjov/", sjovHandler)
-	server.AddHandler("/beskeder/", threadHandler)
+	server.AddHandlerFrom(goserver.HandlerInfo{"/beskeder", nil, threadPostHandler, false})
+	server.AddHandlerFrom(goserver.HandlerInfo{"/beskeder/", threadGetHandler, nil, false})
 	server.AddHandler("/", mainHandler)
 	users := loadUsers()
 	for _, user := range users {
@@ -85,4 +86,12 @@ func toJson(thing interface{}) string {
 		return "{\"error\":\"error\"}"
 	}
 	return string(bytes)
+}
+
+func FromForm(r *http.Request, key string) (string, bool) {
+	values, ok := r.Form[key]
+	if !ok || len(values) == 0 {
+		return "", false
+	}
+	return values[0], true
 }

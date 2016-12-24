@@ -40,8 +40,12 @@ func loadThreads() []Thread {
 	return threads
 }
 
-func threadHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
+func threadGetHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
 	id, err := strconv.Atoi(info.Path)
+	if err != nil {
+		w.Write([]byte("Fejl: " + err.Error()))
+		return
+	}
 	threads := loadThreads()
 	var thread Thread
 	for _, thread = range threads {
@@ -56,4 +60,32 @@ func threadHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
 	} else {
 		temp.Execute(w, data)
 	}
+}
+
+func threadPostHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
+	threads := loadThreads()
+	nextID := 0
+	for _, thread := range threads {
+		if nextID <= thread.ID {
+			nextID = thread.ID + 1
+		}
+	}
+	thread := Thread{}
+	thread.ID = nextID
+	var ok bool
+	r.ParseForm()
+	thread.Title, ok = FromForm(r, "title")
+	if !ok {
+		w.Write([]byte("Fejl: Mangler titel"))
+		return
+	}
+	thread.MainMessage, ok = FromForm(r, "message")
+	if !ok {
+		w.Write([]byte("Fejl: Mangler besked"))
+		return
+	}
+	threads = append(threads, thread)
+	jsonThreads := toJson(threads)
+	ioutil.WriteFile("threads.json", []byte(jsonThreads), 0)
+	http.Redirect(w, r, "/beskeder/"+strconv.Itoa(nextID), http.StatusTemporaryRedirect)
 }

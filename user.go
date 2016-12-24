@@ -38,9 +38,9 @@ func loginPostHandler(w http.ResponseWriter, r *http.Request, info goserver.Info
 		returnLoginPage(w)
 		return
 	}
-	users, _ := r.Form["user"]
-	passwords, _ := r.Form["password"]
-	if len(users) > 0 && len(passwords) > 0 && info.Server.Login(users[0], passwords[0], info.Session) {
+	user, userOk := FromForm(r, "user")
+	password, passwordOk := FromForm(r, "password")
+	if userOk && passwordOk && info.Server.Login(user, password, info.Session) {
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}

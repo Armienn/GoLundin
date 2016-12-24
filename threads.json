@@ -1,8 +1,1 @@
-[
-{"ID":1,"Title":"Første Besked",
-"MainMessage":"Hej med dig, du!",
-"Responses":[]},
-{"ID":2,"Title":"Anden Besked",
-"MainMessage":"Hej med jer, manner!",
-"Responses":[]}
-]
+[{"ID":1,"Title":"Første Besked","MainMessage":"Hej med dig, du!","Responses":[]},{"ID":2,"Title":"Anden Besked","MainMessage":"Hej med jer, manner!","Responses":[]},{"ID":3,"Title":"adsg","MainMessage":"asggg","Responses":null},{"ID":4,"Title":"dafgfd","MainMessage":"adfygh","Responses":null}]
