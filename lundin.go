@@ -17,8 +17,8 @@ func main() {
 	server.AddHandlerFrom(goserver.HandlerInfo{"/login", loginGetHandler, loginPostHandler, true})
 	server.AddHandlerFrom(goserver.HandlerInfo{"/files/", fileHandler, nil, true})
 	server.AddHandler("/sjov/", sjovHandler)
-	server.AddHandlerFrom(goserver.HandlerInfo{"/beskeder", nil, threadPostHandler, false})
-	server.AddHandlerFrom(goserver.HandlerInfo{"/beskeder/", threadGetHandler, nil, false})
+	server.AddHandlerFrom(goserver.HandlerInfo{"/beskeder", nil, threadPostHandler, false}) //TODO
+	server.AddHandlerFrom(goserver.HandlerInfo{"/beskeder/", threadGetHandler, nil, false}) //TODO
 	server.AddHandler("/", mainHandler)
 	users := loadUsers()
 	for _, user := range users {
@@ -47,7 +47,7 @@ func NewMainData(user string, scripts ...string) *MainData {
 
 func mainHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
 	data := NewForumData(loadThreads(), info.User())
-	temp, err := template.ParseFiles("pages/frontpage.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html")
+	temp, err := template.ParseFiles("pages/frontpage.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar.html")
 	if err != nil {
 		w.Write([]byte("Fejl: " + err.Error()))
 	} else {
@@ -60,7 +60,7 @@ func sjovHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
 	if len(info.Path) == 0 {
 		info.Path = "golanguage"
 	}
-	temp, err := template.ParseFiles("pages/"+info.Path+".html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/kode-header.html")
+	temp, err := template.ParseFiles("pages/"+info.Path+".html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/kode-sidebar.html")
 	if err != nil {
 		w.Write([]byte("Fejl: " + err.Error()))
 	} else {

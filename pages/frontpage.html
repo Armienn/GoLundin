@@ -1,21 +1,19 @@
 {{template "base-start" .}}
 {{template "header" .}}
 <div class="main-body">
-	{{range $index, $thread := .Threads}}
-		<div class="thread-entry" onclick="location.href='/beskeder/{{$thread.ID}}'">
-			<div class="thread-title">
-				{{$thread.Title}}
+	{{template "sidebar" .}}
+	<div class="inner-body">
+		{{range $index, $thread := .Threads}}
+			<div class="thread-entry" onclick="location.href='/beskeder/{{$thread.ID}}'">
+				<div class="thread-title">
+					{{$thread.Title}}
+				</div>
+				
+				<div class="thread-body">
+					{{$thread.MainMessage}}
+				</div>
 			</div>
-			
-			<div class="thread-body">
-				{{$thread.MainMessage}}
-			</div>
-		</div>
-	{{end}}
-	<form action="/beskeder" method="post">
-			<input type="text" id="title" name="title" style="width: 20em;"/>
-			<input type="text" id="message" name="message" style="width: 20em;"/>
-			<input type="submit" name="beskeder" value="Gem"/>
-	</form>
+		{{end}}
+	</div>
 </div>
 {{template "base-end" .}}

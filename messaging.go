@@ -41,6 +41,10 @@ func loadThreads() []Thread {
 }
 
 func threadGetHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
+	if info.Path == "ny" {
+		showNewThreadPage(w, info)
+		return
+	}
 	id, err := strconv.Atoi(info.Path)
 	if err != nil {
 		w.Write([]byte("Fejl: " + err.Error()))
@@ -54,7 +58,17 @@ func threadGetHandler(w http.ResponseWriter, r *http.Request, info goserver.Info
 		}
 	}
 	data := NewThreadData(thread, info.User())
-	temp, err := template.ParseFiles("pages/thread.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html")
+	temp, err := template.ParseFiles("pages/thread.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar.html")
+	if err != nil {
+		w.Write([]byte("Fejl: " + err.Error()))
+	} else {
+		temp.Execute(w, data)
+	}
+}
+
+func showNewThreadPage(w http.ResponseWriter, info goserver.Info) {
+	data := NewMainData(info.User(), "/files/js/golanguage/golanguage.js")
+	temp, err := template.ParseFiles("pages/new-thread.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar.html")
 	if err != nil {
 		w.Write([]byte("Fejl: " + err.Error()))
 	} else {

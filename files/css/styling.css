@@ -27,7 +27,7 @@ button:active {
 	left:1px;
 }
 
-input{
+input, textarea{
 	background-color:#f0653b;
 	border:1px solid #942911;
 	display:inline-block;
@@ -85,13 +85,26 @@ input{
 	background-color: #ffeedd;
 }
 
+.inner-body {
+	float:left;
+	padding: 1em;
+	margin-left: 21em;
+	max-width: calc(100% - 23em);
+	min-width: calc(100% - 23em);
+	min-height: calc(100vh - 2em);
+	background-color: #ffeedd;
+}
+
 .thread-entry {
     height: 5rem;
     display: table;
     box-sizing: border-box;
     border-bottom: 1px solid darkred;
-    width: 100vw;
+    width: 100%;
 		cursor: pointer;
+}
+.thread-entry:hover {
+	background-color: #ffd8b1;
 }
 
 .thread-title {
