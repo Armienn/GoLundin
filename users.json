@@ -1,4 +1,10 @@
 [
-{"Name":"Kristjan", "Password":"ersej"},
-{"Name":"Valyrian", "Password":"ersej"}
+{"Name":"Kristjan", "Password":"test"},
+{"Name":"Valyrian", "Password":"test"},
+{"Name":"Daniel", "Password":"test"},
+{"Name":"Lasse", "Password":"test"},
+{"Name":"Bjørn", "Password":"test"},
+{"Name":"Sanna", "Password":"test"},
+{"Name":"Hanne", "Password":"test"},
+{"Name":"Gerda", "Password":"test"}
 ]

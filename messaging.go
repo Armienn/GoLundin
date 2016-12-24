@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"time"
 
 	"encoding/json"
 
@@ -24,7 +25,9 @@ type Thread struct {
 	ID          int
 	Title       string
 	MainMessage string
-	Responses   []string
+	Responses   []Thread
+	Author      string
+	Time        time.Time
 }
 
 func loadThreads() []Thread {
@@ -77,29 +80,61 @@ func showNewThreadPage(w http.ResponseWriter, info goserver.Info) {
 }
 
 func threadPostHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
-	threads := loadThreads()
-	nextID := 0
-	for _, thread := range threads {
-		if nextID <= thread.ID {
-			nextID = thread.ID + 1
-		}
-	}
-	thread := Thread{}
-	thread.ID = nextID
-	var ok bool
 	r.ParseForm()
+	thread, ok := ThreadFromForm(w, r, info)
+	if !ok {
+		return
+	}
+	threads := loadThreads()
+	if thread.Title == "response" {
+		for i, existingThread := range threads {
+			if existingThread.ID == thread.ID {
+				if existingThread.Responses == nil {
+					existingThread.Responses = make([]Thread, 1)
+					existingThread.Responses[0] = *thread
+				} else {
+					existingThread.Responses = append(existingThread.Responses, *thread)
+				}
+				threads[i] = existingThread
+				break
+			}
+		}
+	} else {
+		thread.ID = 0
+		for _, existingThread := range threads {
+			if thread.ID <= existingThread.ID {
+				thread.ID = existingThread.ID + 1
+			}
+		}
+		threads = append(threads, *thread)
+	}
+	jsonThreads := toJson(threads)
+	ioutil.WriteFile("threads.json", []byte(jsonThreads), 0)
+	http.Redirect(w, r, "/beskeder/"+strconv.Itoa(thread.ID), http.StatusTemporaryRedirect)
+}
+
+func ThreadFromForm(w http.ResponseWriter, r *http.Request, info goserver.Info) (*Thread, bool) {
+	thread := &Thread{}
+	id, ok := FromForm(r, "ID")
+	if !ok {
+		thread.ID = 0
+	}
+	var err error
+	thread.ID, err = strconv.Atoi(id)
+	if err != nil {
+		thread.ID = 0
+	}
 	thread.Title, ok = FromForm(r, "title")
 	if !ok {
 		w.Write([]byte("Fejl: Mangler titel"))
-		return
+		return nil, false
 	}
 	thread.MainMessage, ok = FromForm(r, "message")
 	if !ok {
 		w.Write([]byte("Fejl: Mangler besked"))
-		return
+		return nil, false
 	}
-	threads = append(threads, thread)
-	jsonThreads := toJson(threads)
-	ioutil.WriteFile("threads.json", []byte(jsonThreads), 0)
-	http.Redirect(w, r, "/beskeder/"+strconv.Itoa(nextID), http.StatusTemporaryRedirect)
+	thread.Author = info.User()
+	thread.Time = time.Now()
+	return thread, true
 }

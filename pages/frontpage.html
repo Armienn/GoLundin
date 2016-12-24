@@ -5,8 +5,13 @@
 	<div class="inner-body">
 		{{range $index, $thread := .Threads}}
 			<div class="thread-entry" onclick="location.href='/beskeder/{{$thread.ID}}'">
-				<div class="thread-title">
-					{{$thread.Title}}
+				<div class="thread-title-line">
+					<div class="thread-title">
+						{{.Title}}
+					</div>
+					<div class="thread-author">
+						{{.Author}}
+					</div>
 				</div>
 				
 				<div class="thread-body">

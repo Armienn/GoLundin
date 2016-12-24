@@ -28,6 +28,7 @@ button:active {
 }
 
 input, textarea{
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	background-color:#f0653b;
 	border:1px solid #942911;
 	display:inline-block;
@@ -96,25 +97,59 @@ input, textarea{
 }
 
 .thread-entry {
-    height: 5rem;
-    display: table;
-    box-sizing: border-box;
-    border-bottom: 1px solid darkred;
-    width: 100%;
-		cursor: pointer;
+	height: 5rem;
+	display: table;
+	box-sizing: border-box;
+	border-bottom: 1px solid darkred;
+	width: 100%;
+	cursor: pointer;
 }
 .thread-entry:hover {
 	background-color: #ffd8b1;
 }
 
+.thread-title-line {
+	display: table;
+	width: 100%;
+}
+
 .thread-title {
-    margin: 0.5rem;
-    height: 2rem;
-    font-size: 1.5rem;
+	margin: 0.5rem;
+	height: 2rem;
+	font-size: 1.5rem;
+	float: left;
+}
+
+.thread-author {
+	margin: 1rem;
+	float: right;
+}
+
+.thread-message {
+	padding: 1rem;
+	margin-bottom: 1rem;
+	background-color: #ffd8b1;
 }
 
 .thread-body {
-    margin-left: 1rem;
+  margin: 0 1rem 1rem 1rem;
+}
+
+.thread-response-block {
+	border-top: 1px solid darkred;
+	display: table;
+	width: 100%;
+	padding: 0.5rem;
+	box-sizing: border-box;
+}
+
+.thread-response-author {
+  font-weight: bold;
+}
+
+.thread-response {
+	padding-left: 1rem;
+	background-color: #ffd8b1;
 }
 
 .fancy-link {
