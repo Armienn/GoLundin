@@ -56,11 +56,11 @@ func mainHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
 }
 
 func sjovHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
-	data := NewMainData(info.User(), "/files/js/golanguage/golanguage.js")
+	data := NewMainData(info.User())
 	if len(info.Path) == 0 {
 		info.Path = "golanguage"
 	}
-	temp, err := template.ParseFiles("pages/"+info.Path+".html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/kode-sidebar.html")
+	temp, err := template.ParseFiles("pages/sjov/"+info.Path+".html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/kode-sidebar.html")
 	if err != nil {
 		w.Write([]byte("Fejl: " + err.Error()))
 	} else {
