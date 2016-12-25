@@ -17629,9 +17629,48 @@ $packages["fmt"] = (function() {
 	$pkg.$init = $init;
 	return $pkg;
 })();
+$packages["github.com/Nequilich/gocto"] = (function() {
+	var $pkg = {}, $init, js, DocumentObject, ptrType, ptrType$1, init, getDocument, CreateElement;
+	js = $packages["github.com/gopherjs/gopherjs/js"];
+	DocumentObject = $pkg.DocumentObject = $newType(0, $kindStruct, "gocto.DocumentObject", true, "github.com/Nequilich/gocto", true, function(Object_) {
+		this.$val = this;
+		if (arguments.length === 0) {
+			this.Object = null;
+			return;
+		}
+		this.Object = Object_;
+	});
+	ptrType = $ptrType(DocumentObject);
+	ptrType$1 = $ptrType(js.Object);
+	init = function() {
+		var $ptr;
+		$pkg.Document = getDocument();
+	};
+	getDocument = function() {
+		var $ptr;
+		return new DocumentObject.ptr($global.document);
+	};
+	CreateElement = function(tagName) {
+		var $ptr, tagName;
+		return $pkg.Document.Object.createElement($externalize(tagName, $String));
+	};
+	$pkg.CreateElement = CreateElement;
+	DocumentObject.init("", [{prop: "Object", name: "", exported: true, typ: ptrType$1, tag: ""}]);
+	$init = function() {
+		$pkg.$init = function() {};
+		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		$r = js.$init(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$pkg.Document = ptrType.nil;
+		init();
+		/* */ } return; } if ($f === undefined) { $f = { $blk: $init }; } $f.$s = $s; $f.$r = $r; return $f;
+	};
+	$pkg.$init = $init;
+	return $pkg;
+})();
 $packages["github.com/Armienn/GoLundin/files/js/waeraeld"] = (function() {
-	var $pkg = {}, $init, fmt, js, Character, Gene, Document, ptrType, sliceType, sliceType$1, sliceType$2, funcType, ptrType$1, ptrType$2, ptrType$3, main, NewGene, addGeneButton, NewButton, GetDocument;
+	var $pkg = {}, $init, fmt, gocto, js, Character, Gene, ptrType, sliceType, sliceType$1, sliceType$2, funcType, ptrType$1, main, NewGene, addGeneButton, NewButton;
 	fmt = $packages["fmt"];
+	gocto = $packages["github.com/Nequilich/gocto"];
 	js = $packages["github.com/gopherjs/gopherjs/js"];
 	Character = $pkg.Character = $newType(0, $kindStruct, "main.Character", true, "github.com/Armienn/GoLundin/files/js/waeraeld", true, function(Genes_, STR_, DEX_, CON_, INT_, WIS_, CHA_, WeightClass_, Abilities_) {
 		this.$val = this;
@@ -17681,30 +17720,19 @@ $packages["github.com/Armienn/GoLundin/files/js/waeraeld"] = (function() {
 		this.WeightClass = WeightClass_;
 		this.Abilities = Abilities_;
 	});
-	Document = $pkg.Document = $newType(0, $kindStruct, "main.Document", true, "github.com/Armienn/GoLundin/files/js/waeraeld", true, function(Object_) {
-		this.$val = this;
-		if (arguments.length === 0) {
-			this.Object = null;
-			return;
-		}
-		this.Object = Object_;
-	});
 	ptrType = $ptrType(Gene);
 	sliceType = $sliceType(ptrType);
 	sliceType$1 = $sliceType($String);
 	sliceType$2 = $sliceType($emptyInterface);
 	funcType = $funcType([], [], false);
 	ptrType$1 = $ptrType(Character);
-	ptrType$2 = $ptrType(js.Object);
-	ptrType$3 = $ptrType(Document);
 	main = function() {
-		var $ptr, _i, _ref, button, character, destinationElement, document, gene, genes;
+		var $ptr, _i, _ref, button, character, destinationElement, gene, genes;
 		character = new Character.ptr(sliceType.nil, 0, 0, 0, 0, 0, 0, 0, sliceType$1.nil);
 		character.Genes = $makeSlice(sliceType, 0);
 		genes = new sliceType([NewGene("Endoskelet", 10, 12, 10, 10, 10, 10, 10, new sliceType$1([])), NewGene("Exoskelet", 12, 10, 12, 10, 10, 10, 15, new sliceType$1([])), NewGene("Lunger", 0, 0, 0, 0, 0, 0, 1, new sliceType$1(["Tr\xC3\xA6kke vejret i luft", "Holde vejret"]))]);
-		document = GetDocument();
 		destinationElement = $global.otherplace;
-		button = NewButton(document, "Clear", (function $b() {
+		button = NewButton("Clear", (function $b() {
 			var $ptr, _r, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 			character.Genes = $makeSlice(sliceType, 0);
@@ -17720,7 +17748,7 @@ $packages["github.com/Armienn/GoLundin/files/js/waeraeld"] = (function() {
 		while (true) {
 			if (!(_i < _ref.$length)) { break; }
 			gene = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
-			addGeneButton(document, character, gene);
+			addGeneButton(character, gene);
 			_i++;
 		}
 		$global.outputText.innerHTML = $externalize("text", $String);
@@ -17778,10 +17806,10 @@ $packages["github.com/Armienn/GoLundin/files/js/waeraeld"] = (function() {
 		return new Gene.ptr(name, str, dex, con, intelligence, wis, cha, weightClass, abilities);
 	};
 	$pkg.NewGene = NewGene;
-	addGeneButton = function(document, character, gene) {
-		var $ptr, button, character, destinationElement, document, gene;
+	addGeneButton = function(character, gene) {
+		var $ptr, button, character, destinationElement, gene;
 		destinationElement = $global.buttonplace;
-		button = NewButton(document, gene.Name, (function $b() {
+		button = NewButton(gene.Name, (function $b() {
 			var $ptr, _r, $s, $r;
 			/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 			character.Genes = $append(character.Genes, gene);
@@ -17793,36 +17821,24 @@ $packages["github.com/Armienn/GoLundin/files/js/waeraeld"] = (function() {
 		}));
 		destinationElement.appendChild(button);
 	};
-	NewButton = function(document, text, onClick) {
-		var $ptr, button, document, onClick, text;
-		button = document.CreateElement("button");
+	NewButton = function(text, onClick) {
+		var $ptr, button, onClick, text;
+		button = gocto.CreateElement("button");
 		button.onclick = $externalize(onClick, funcType);
 		button.innerHTML = $externalize(text, $String);
 		button.style.marginBottom = $externalize("0.5rem", $String);
 		return button;
 	};
 	$pkg.NewButton = NewButton;
-	GetDocument = function() {
-		var $ptr;
-		return new Document.ptr($global.document);
-	};
-	$pkg.GetDocument = GetDocument;
-	Document.ptr.prototype.CreateElement = function(tagName) {
-		var $ptr, document, tagName;
-		document = this;
-		return document.Object.createElement($externalize(tagName, $String));
-	};
-	Document.prototype.CreateElement = function(tagName) { return this.$val.CreateElement(tagName); };
 	ptrType$1.methods = [{prop: "UpdateStats", name: "UpdateStats", pkg: "", typ: $funcType([], [], false)}, {prop: "GetDescription", name: "GetDescription", pkg: "", typ: $funcType([], [$String], false)}];
-	ptrType$3.methods = [{prop: "CreateElement", name: "CreateElement", pkg: "", typ: $funcType([$String], [ptrType$2], false)}];
 	Character.init("", [{prop: "Genes", name: "Genes", exported: true, typ: sliceType, tag: ""}, {prop: "STR", name: "STR", exported: true, typ: $Int, tag: ""}, {prop: "DEX", name: "DEX", exported: true, typ: $Int, tag: ""}, {prop: "CON", name: "CON", exported: true, typ: $Int, tag: ""}, {prop: "INT", name: "INT", exported: true, typ: $Int, tag: ""}, {prop: "WIS", name: "WIS", exported: true, typ: $Int, tag: ""}, {prop: "CHA", name: "CHA", exported: true, typ: $Int, tag: ""}, {prop: "WeightClass", name: "WeightClass", exported: true, typ: $Int, tag: ""}, {prop: "Abilities", name: "Abilities", exported: true, typ: sliceType$1, tag: ""}]);
 	Gene.init("", [{prop: "Name", name: "Name", exported: true, typ: $String, tag: ""}, {prop: "STR", name: "STR", exported: true, typ: $Int, tag: ""}, {prop: "DEX", name: "DEX", exported: true, typ: $Int, tag: ""}, {prop: "CON", name: "CON", exported: true, typ: $Int, tag: ""}, {prop: "INT", name: "INT", exported: true, typ: $Int, tag: ""}, {prop: "WIS", name: "WIS", exported: true, typ: $Int, tag: ""}, {prop: "CHA", name: "CHA", exported: true, typ: $Int, tag: ""}, {prop: "WeightClass", name: "WeightClass", exported: true, typ: $Int, tag: ""}, {prop: "Abilities", name: "Abilities", exported: true, typ: sliceType$1, tag: ""}]);
-	Document.init("", [{prop: "Object", name: "", exported: true, typ: ptrType$2, tag: ""}]);
 	$init = function() {
 		$pkg.$init = function() {};
 		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		$r = fmt.$init(); /* */ $s = 1; case 1: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
-		$r = js.$init(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = gocto.$init(); /* */ $s = 2; case 2: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
+		$r = js.$init(); /* */ $s = 3; case 3: if($c) { $c = false; $r = $r.$blk(); } if ($r && $r.$blk !== undefined) { break s; }
 		if ($pkg === $mainPkg) {
 			main();
 			$mainFinished = true;

@@ -1,7 +1,11 @@
 package main
 
-import "github.com/gopherjs/gopherjs/js"
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/Nequilich/gocto"
+	"github.com/gopherjs/gopherjs/js"
+)
 
 func main() {
 	character := new(Character)
@@ -11,17 +15,16 @@ func main() {
 		NewGene("Exoskelet", 12, 10, 12, 10, 10, 10, 15),
 		NewGene("Lunger", 0, 0, 0, 0, 0, 0, 1, "Trække vejret i luft", "Holde vejret"),
 	}
-	document := GetDocument()
 
 	destinationElement := js.Global.Get("otherplace")
-	button := NewButton(document, "Clear", func() {
+	button := NewButton("Clear", func() {
 		character.Genes = make([]*Gene, 0)
 		js.Global.Get("outputText").Set("innerHTML", character.GetDescription())
 	})
 	destinationElement.Call("appendChild", button)
 
 	for _, gene := range genes {
-		addGeneButton(document, character, gene)
+		addGeneButton(character, gene)
 	}
 
 	js.Global.Get("outputText").Set("innerHTML", "text")
@@ -100,31 +103,19 @@ func NewGene(name string, str int, dex int, con int, intelligence int, wis int, 
 	return &Gene{name, str, dex, con, intelligence, wis, cha, weightClass, abilities}
 }
 
-func addGeneButton(document *Document, character *Character, gene *Gene) {
+func addGeneButton(character *Character, gene *Gene) {
 	destinationElement := js.Global.Get("buttonplace")
-	button := NewButton(document, gene.Name, func() {
+	button := NewButton(gene.Name, func() {
 		character.Genes = append(character.Genes, gene)
 		js.Global.Get("outputText").Set("innerHTML", character.GetDescription())
 	})
 	destinationElement.Call("appendChild", button)
 }
 
-func NewButton(document *Document, text string, onClick func()) *js.Object {
-	button := document.CreateElement("button")
+func NewButton(text string, onClick func()) *js.Object {
+	button := gocto.CreateElement("button")
 	button.Set("onclick", onClick)
 	button.Set("innerHTML", text)
 	button.Get("style").Set("marginBottom", "0.5rem")
 	return button
-}
-
-type Document struct {
-	*js.Object
-}
-
-func GetDocument() *Document {
-	return &Document{js.Global.Get("document")}
-}
-
-func (document *Document) CreateElement(tagName string) *js.Object {
-	return document.Call("createElement", tagName)
 }
