@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"strconv"
 
 	"github.com/Nequilich/gocto"
 	"github.com/gopherjs/gopherjs/js"
@@ -11,9 +11,12 @@ func main() {
 	character := new(Character)
 	character.Genes = make([]*Gene, 0)
 	genes := []*Gene{
-		NewGene("Endoskelet", 10, 12, 10, 10, 10, 10, 10),
-		NewGene("Exoskelet", 12, 10, 12, 10, 10, 10, 15),
-		NewGene("Lunger", 0, 0, 0, 0, 0, 0, 1, "Trække vejret i luft", "Holde vejret"),
+		NewGene("Endoskelet", 10, 12, 10, 0, 0, 0, 10),
+		NewGene("Exoskelet", 12, 10, 12, 0, 0, 0, 15),
+		NewGene("Massivt skelet", 4, 0, 0, 0, 0, 0, 5),
+		NewGene("Spinkelt skelet", -2, 2, 0, 0, 0, 0, -5),
+		NewGene("Lunger", 0, 0, 0, 0, 0, 0, 1, "Trække vejret i luft", "Holde vejret", "Dør uden luft"),
+		NewGene("Hud", 0, 0, 6, 0, 0, 0, 2),
 	}
 
 	destinationElement := js.Global.Get("otherplace")
@@ -31,15 +34,8 @@ func main() {
 }
 
 type Character struct {
-	Genes       []*Gene
-	STR         int
-	DEX         int
-	CON         int
-	INT         int
-	WIS         int
-	CHA         int
-	WeightClass int
-	Abilities   []string
+	Genes []*Gene
+	Gene
 }
 
 func (character *Character) UpdateStats() {
@@ -65,26 +61,16 @@ func (character *Character) UpdateStats() {
 
 func (character *Character) GetDescription() string {
 	character.UpdateStats()
-	description := ""
+	description := "Abilities:<br/>"
 	for _, ability := range character.Abilities {
-		description += "Ability: " + ability + "<br/>"
+		description += ability + "<br/>"
 	}
-	return description + fmt.Sprintf(`
-	STR: %d <br/>
-	DEX: %d <br/>
-	CON: %d <br/>
-	INT: %d <br/>
-	WIS: %d <br/>
-	CHA: %d <br/>
-	WeightClass: %d
-	`,
-		character.STR,
-		character.DEX,
-		character.CON,
-		character.INT,
-		character.WIS,
-		character.CHA,
-		character.WeightClass)
+	description += "<br/>" + character.ToString()
+	description += "<br/>Genes:<br/>"
+	for _, gene := range character.Genes {
+		description += gene.Name + "<br/>"
+	}
+	return description
 }
 
 type Gene struct {
@@ -103,6 +89,16 @@ func NewGene(name string, str int, dex int, con int, intelligence int, wis int, 
 	return &Gene{name, str, dex, con, intelligence, wis, cha, weightClass, abilities}
 }
 
+func (gene *Gene) ToString() string {
+	return "STR: " + strconv.Itoa(gene.STR) + "<br/>" +
+		"DEX: " + strconv.Itoa(gene.DEX) + "<br/>" +
+		"CON: " + strconv.Itoa(gene.CON) + "<br/>" +
+		"INT: " + strconv.Itoa(gene.INT) + "<br/>" +
+		"WIS: " + strconv.Itoa(gene.WIS) + "<br/>" +
+		"CHA: " + strconv.Itoa(gene.CHA) + "<br/>" +
+		"WeightClass: " + strconv.Itoa(gene.WeightClass) + "<br/>"
+}
+
 func addGeneButton(character *Character, gene *Gene) {
 	destinationElement := js.Global.Get("buttonplace")
 	button := NewButton(gene.Name, func() {
@@ -117,5 +113,6 @@ func NewButton(text string, onClick func()) *js.Object {
 	button.Set("onclick", onClick)
 	button.Set("innerHTML", text)
 	button.Get("style").Set("marginBottom", "0.5rem")
+	button.Get("style").Set("width", "100%")
 	return button
 }
