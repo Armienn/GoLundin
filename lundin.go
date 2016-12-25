@@ -24,7 +24,7 @@ func main() {
 	for _, user := range users {
 		server.AddUser(user.Name, user.Password)
 	}
-	server.Serve()
+	server.ServeOnPort(":8008")
 }
 
 type MainData struct {
@@ -58,7 +58,7 @@ func mainHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
 func sjovHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
 	data := NewMainData(info.User())
 	if len(info.Path) == 0 {
-		info.Path = "golanguage"
+		info.Path = "js"
 	}
 	temp, err := template.ParseFiles("pages/sjov/"+info.Path+".html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/kode-sidebar.html")
 	if err != nil {
