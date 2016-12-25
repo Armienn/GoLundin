@@ -1,23 +1,19 @@
 package main
 
 import (
+	"encoding/json"
 	"strconv"
 
 	"github.com/Nequilich/gocto"
 	"github.com/gopherjs/gopherjs/js"
 )
 
+var character *Character
+var genes []*Gene
+
 func main() {
-	character := new(Character)
+	character = new(Character)
 	character.Genes = make([]*Gene, 0)
-	genes := []*Gene{
-		NewGene("Endoskelet", 10, 12, 10, 0, 0, 0, 10),
-		NewGene("Exoskelet", 12, 10, 12, 0, 0, 0, 15),
-		NewGene("Massivt skelet", 4, 0, 0, 0, 0, 0, 5),
-		NewGene("Spinkelt skelet", -2, 2, 0, 0, 0, 0, -5),
-		NewGene("Lunger", 0, 0, 0, 0, 0, 0, 1, "Trække vejret i luft", "Holde vejret", "Dør uden luft"),
-		NewGene("Hud", 0, 0, 6, 0, 0, 0, 2),
-	}
 
 	destinationElement := js.Global.Get("otherplace")
 	button := NewButton("Clear", func() {
@@ -26,11 +22,24 @@ func main() {
 	})
 	destinationElement.Call("appendChild", button)
 
+	button = js.Global.Get("updategenesbutton")
+	button.Set("onclick", func() {
+		UpdateGenes()
+		js.Global.Get("genebutton").Get("style").Set("display", "block")
+		js.Global.Get("geneinput").Get("style").Set("display", "none")
+	})
+	UpdateGenes()
+}
+
+func UpdateGenes() {
+	genetext := js.Global.Get("genes").Get("value").String()
+	json.Unmarshal([]byte(genetext), &genes)
+	character.Genes = make([]*Gene, 0)
+	js.Global.Get("buttonplace").Set("innerHTML", "")
 	for _, gene := range genes {
 		addGeneButton(character, gene)
 	}
-
-	js.Global.Get("outputText").Set("innerHTML", "text")
+	js.Global.Get("outputText").Set("innerHTML", character.GetDescription())
 }
 
 type Character struct {
@@ -82,12 +91,13 @@ type Gene struct {
 	WIS         int
 	CHA         int
 	WeightClass int
+	Energy      int
 	Abilities   []string
 }
 
-func NewGene(name string, str int, dex int, con int, intelligence int, wis int, cha int, weightClass int, abilities ...string) *Gene {
-	return &Gene{name, str, dex, con, intelligence, wis, cha, weightClass, abilities}
-}
+//func NewGene(name string, str int, dex int, con int, intelligence int, wis int, cha int, weightClass int, abilities ...string) *Gene {
+//	return &Gene{name, str, dex, con, intelligence, wis, cha, weightClass, abilities}
+//}
 
 func (gene *Gene) ToString() string {
 	return "STR: " + strconv.Itoa(gene.STR) + "<br/>" +
