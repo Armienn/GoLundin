@@ -54,6 +54,7 @@ func (character *Character) UpdateStats() {
 	character.INT = 0
 	character.WIS = 0
 	character.CHA = 0
+	character.Energy = 0
 	character.WeightClass = 0
 	character.Abilities = []string{}
 	for _, gene := range character.Genes {
@@ -63,6 +64,7 @@ func (character *Character) UpdateStats() {
 		character.INT += gene.INT
 		character.WIS += gene.WIS
 		character.CHA += gene.CHA
+		character.Energy += gene.Energy
 		character.WeightClass += gene.WeightClass
 		character.Abilities = append(character.Abilities, gene.Abilities...)
 	}
@@ -106,6 +108,7 @@ func (gene *Gene) ToString() string {
 		"INT: " + strconv.Itoa(gene.INT) + "<br/>" +
 		"WIS: " + strconv.Itoa(gene.WIS) + "<br/>" +
 		"CHA: " + strconv.Itoa(gene.CHA) + "<br/>" +
+		"Energy: " + strconv.Itoa(gene.Energy) + "<br/>" +
 		"WeightClass: " + strconv.Itoa(gene.WeightClass) + "<br/>"
 }
 

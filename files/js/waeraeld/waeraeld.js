@@ -22532,6 +22532,7 @@ $packages["github.com/Armienn/GoLundin/files/js/waeraeld"] = (function() {
 		character$1.Gene.INT = 0;
 		character$1.Gene.WIS = 0;
 		character$1.Gene.CHA = 0;
+		character$1.Gene.Energy = 0;
 		character$1.Gene.WeightClass = 0;
 		character$1.Gene.Abilities = new sliceType$1([]);
 		_ref = character$1.Genes;
@@ -22545,6 +22546,7 @@ $packages["github.com/Armienn/GoLundin/files/js/waeraeld"] = (function() {
 			character$1.Gene.INT = character$1.Gene.INT + (gene.INT) >> 0;
 			character$1.Gene.WIS = character$1.Gene.WIS + (gene.WIS) >> 0;
 			character$1.Gene.CHA = character$1.Gene.CHA + (gene.CHA) >> 0;
+			character$1.Gene.Energy = character$1.Gene.Energy + (gene.Energy) >> 0;
 			character$1.Gene.WeightClass = character$1.Gene.WeightClass + (gene.WeightClass) >> 0;
 			character$1.Gene.Abilities = $appendSlice(character$1.Gene.Abilities, gene.Abilities);
 			_i++;
@@ -22580,7 +22582,7 @@ $packages["github.com/Armienn/GoLundin/files/js/waeraeld"] = (function() {
 	Gene.ptr.prototype.ToString = function() {
 		var $ptr, gene;
 		gene = this;
-		return "STR: " + strconv.Itoa(gene.STR) + "<br/>" + "DEX: " + strconv.Itoa(gene.DEX) + "<br/>" + "CON: " + strconv.Itoa(gene.CON) + "<br/>" + "INT: " + strconv.Itoa(gene.INT) + "<br/>" + "WIS: " + strconv.Itoa(gene.WIS) + "<br/>" + "CHA: " + strconv.Itoa(gene.CHA) + "<br/>" + "WeightClass: " + strconv.Itoa(gene.WeightClass) + "<br/>";
+		return "STR: " + strconv.Itoa(gene.STR) + "<br/>" + "DEX: " + strconv.Itoa(gene.DEX) + "<br/>" + "CON: " + strconv.Itoa(gene.CON) + "<br/>" + "INT: " + strconv.Itoa(gene.INT) + "<br/>" + "WIS: " + strconv.Itoa(gene.WIS) + "<br/>" + "CHA: " + strconv.Itoa(gene.CHA) + "<br/>" + "Energy: " + strconv.Itoa(gene.Energy) + "<br/>" + "WeightClass: " + strconv.Itoa(gene.WeightClass) + "<br/>";
 	};
 	Gene.prototype.ToString = function() { return this.$val.ToString(); };
 	addGeneButton = function(character$1, gene) {
