@@ -17630,10 +17630,10 @@ $packages["fmt"] = (function() {
 	return $pkg;
 })();
 $packages["github.com/Armienn/GoLundin/files/js/waeraeld"] = (function() {
-	var $pkg = {}, $init, fmt, js, Character, Gene, Document, sliceType, sliceType$1, funcType, ptrType, ptrType$1, ptrType$2, main, addGeneButton, NewButton, GetDocument;
+	var $pkg = {}, $init, fmt, js, Character, Gene, Document, ptrType, sliceType, sliceType$1, sliceType$2, funcType, ptrType$1, ptrType$2, ptrType$3, main, NewGene, addGeneButton, NewButton, GetDocument;
 	fmt = $packages["fmt"];
 	js = $packages["github.com/gopherjs/gopherjs/js"];
-	Character = $pkg.Character = $newType(0, $kindStruct, "main.Character", true, "github.com/Armienn/GoLundin/files/js/waeraeld", true, function(Genes_, STR_, DEX_, CON_, INT_, WIS_, CHA_, WeightClass_) {
+	Character = $pkg.Character = $newType(0, $kindStruct, "main.Character", true, "github.com/Armienn/GoLundin/files/js/waeraeld", true, function(Genes_, STR_, DEX_, CON_, INT_, WIS_, CHA_, WeightClass_, Abilities_) {
 		this.$val = this;
 		if (arguments.length === 0) {
 			this.Genes = sliceType.nil;
@@ -17644,6 +17644,7 @@ $packages["github.com/Armienn/GoLundin/files/js/waeraeld"] = (function() {
 			this.WIS = 0;
 			this.CHA = 0;
 			this.WeightClass = 0;
+			this.Abilities = sliceType$1.nil;
 			return;
 		}
 		this.Genes = Genes_;
@@ -17654,8 +17655,9 @@ $packages["github.com/Armienn/GoLundin/files/js/waeraeld"] = (function() {
 		this.WIS = WIS_;
 		this.CHA = CHA_;
 		this.WeightClass = WeightClass_;
+		this.Abilities = Abilities_;
 	});
-	Gene = $pkg.Gene = $newType(0, $kindStruct, "main.Gene", true, "github.com/Armienn/GoLundin/files/js/waeraeld", true, function(Name_, STR_, DEX_, CON_, INT_, WIS_, CHA_, WeightClass_) {
+	Gene = $pkg.Gene = $newType(0, $kindStruct, "main.Gene", true, "github.com/Armienn/GoLundin/files/js/waeraeld", true, function(Name_, STR_, DEX_, CON_, INT_, WIS_, CHA_, WeightClass_, Abilities_) {
 		this.$val = this;
 		if (arguments.length === 0) {
 			this.Name = "";
@@ -17666,6 +17668,7 @@ $packages["github.com/Armienn/GoLundin/files/js/waeraeld"] = (function() {
 			this.WIS = 0;
 			this.CHA = 0;
 			this.WeightClass = 0;
+			this.Abilities = sliceType$1.nil;
 			return;
 		}
 		this.Name = Name_;
@@ -17676,6 +17679,7 @@ $packages["github.com/Armienn/GoLundin/files/js/waeraeld"] = (function() {
 		this.WIS = WIS_;
 		this.CHA = CHA_;
 		this.WeightClass = WeightClass_;
+		this.Abilities = Abilities_;
 	});
 	Document = $pkg.Document = $newType(0, $kindStruct, "main.Document", true, "github.com/Armienn/GoLundin/files/js/waeraeld", true, function(Object_) {
 		this.$val = this;
@@ -17685,17 +17689,19 @@ $packages["github.com/Armienn/GoLundin/files/js/waeraeld"] = (function() {
 		}
 		this.Object = Object_;
 	});
-	sliceType = $sliceType(Gene);
-	sliceType$1 = $sliceType($emptyInterface);
+	ptrType = $ptrType(Gene);
+	sliceType = $sliceType(ptrType);
+	sliceType$1 = $sliceType($String);
+	sliceType$2 = $sliceType($emptyInterface);
 	funcType = $funcType([], [], false);
-	ptrType = $ptrType(Character);
-	ptrType$1 = $ptrType(js.Object);
-	ptrType$2 = $ptrType(Document);
+	ptrType$1 = $ptrType(Character);
+	ptrType$2 = $ptrType(js.Object);
+	ptrType$3 = $ptrType(Document);
 	main = function() {
 		var $ptr, _i, _ref, button, character, destinationElement, document, gene, genes;
-		character = new Character.ptr(sliceType.nil, 0, 0, 0, 0, 0, 0, 0);
+		character = new Character.ptr(sliceType.nil, 0, 0, 0, 0, 0, 0, 0, sliceType$1.nil);
 		character.Genes = $makeSlice(sliceType, 0);
-		genes = new sliceType([new Gene.ptr("Endoskelet", 10, 12, 10, 10, 10, 10, 10), new Gene.ptr("Exoskelet", 12, 10, 12, 10, 10, 10, 15)]);
+		genes = new sliceType([NewGene("Endoskelet", 10, 12, 10, 10, 10, 10, 10, new sliceType$1([])), NewGene("Exoskelet", 12, 10, 12, 10, 10, 10, 15, new sliceType$1([])), NewGene("Lunger", 0, 0, 0, 0, 0, 0, 1, new sliceType$1(["Tr\xC3\xA6kke vejret i luft", "Holde vejret"]))]);
 		document = GetDocument();
 		destinationElement = $global.otherplace;
 		button = NewButton(document, "Clear", (function $b() {
@@ -17713,7 +17719,7 @@ $packages["github.com/Armienn/GoLundin/files/js/waeraeld"] = (function() {
 		_i = 0;
 		while (true) {
 			if (!(_i < _ref.$length)) { break; }
-			gene = $clone(((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]), Gene);
+			gene = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
 			addGeneButton(document, character, gene);
 			_i++;
 		}
@@ -17729,11 +17735,12 @@ $packages["github.com/Armienn/GoLundin/files/js/waeraeld"] = (function() {
 		character.WIS = 0;
 		character.CHA = 0;
 		character.WeightClass = 0;
+		character.Abilities = new sliceType$1([]);
 		_ref = character.Genes;
 		_i = 0;
 		while (true) {
 			if (!(_i < _ref.$length)) { break; }
-			gene = $clone(((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]), Gene);
+			gene = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
 			character.STR = character.STR + (gene.STR) >> 0;
 			character.DEX = character.DEX + (gene.DEX) >> 0;
 			character.CON = character.CON + (gene.CON) >> 0;
@@ -17741,24 +17748,38 @@ $packages["github.com/Armienn/GoLundin/files/js/waeraeld"] = (function() {
 			character.WIS = character.WIS + (gene.WIS) >> 0;
 			character.CHA = character.CHA + (gene.CHA) >> 0;
 			character.WeightClass = character.WeightClass + (gene.WeightClass) >> 0;
+			character.Abilities = $appendSlice(character.Abilities, gene.Abilities);
 			_i++;
 		}
 	};
 	Character.prototype.UpdateStats = function() { return this.$val.UpdateStats(); };
 	Character.ptr.prototype.GetDescription = function() {
-		var $ptr, _r, character, $s, $r;
-		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _r = $f._r; character = $f.character; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
+		var $ptr, _i, _r, _ref, ability, character, description, $s, $r;
+		/* */ $s = 0; var $f, $c = false; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $ptr = $f.$ptr; _i = $f._i; _r = $f._r; _ref = $f._ref; ability = $f.ability; character = $f.character; description = $f.description; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:
 		character = this;
 		character.UpdateStats();
-		_r = fmt.Sprintf("\n\tSTR: %d <br/>\n\tDEX: %d <br/>\n\tCON: %d <br/>\n\tINT: %d <br/>\n\tWIS: %d <br/>\n\tCHA: %d <br/>\n\tWeightClass: %d\n\t", new sliceType$1([new $Int(character.STR), new $Int(character.DEX), new $Int(character.CON), new $Int(character.INT), new $Int(character.WIS), new $Int(character.CHA), new $Int(character.WeightClass)])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
-		$s = -1; return _r;
-		return _r;
-		/* */ } return; } if ($f === undefined) { $f = { $blk: Character.ptr.prototype.GetDescription }; } $f.$ptr = $ptr; $f._r = _r; $f.character = character; $f.$s = $s; $f.$r = $r; return $f;
+		description = "";
+		_ref = character.Abilities;
+		_i = 0;
+		while (true) {
+			if (!(_i < _ref.$length)) { break; }
+			ability = ((_i < 0 || _i >= _ref.$length) ? $throwRuntimeError("index out of range") : _ref.$array[_ref.$offset + _i]);
+			description = description + ("Ability: " + ability + "<br/>");
+			_i++;
+		}
+		_r = fmt.Sprintf("\n\tSTR: %d <br/>\n\tDEX: %d <br/>\n\tCON: %d <br/>\n\tINT: %d <br/>\n\tWIS: %d <br/>\n\tCHA: %d <br/>\n\tWeightClass: %d\n\t", new sliceType$2([new $Int(character.STR), new $Int(character.DEX), new $Int(character.CON), new $Int(character.INT), new $Int(character.WIS), new $Int(character.CHA), new $Int(character.WeightClass)])); /* */ $s = 1; case 1: if($c) { $c = false; _r = _r.$blk(); } if (_r && _r.$blk !== undefined) { break s; }
+		$s = -1; return description + _r;
+		return description + _r;
+		/* */ } return; } if ($f === undefined) { $f = { $blk: Character.ptr.prototype.GetDescription }; } $f.$ptr = $ptr; $f._i = _i; $f._r = _r; $f._ref = _ref; $f.ability = ability; $f.character = character; $f.description = description; $f.$s = $s; $f.$r = $r; return $f;
 	};
 	Character.prototype.GetDescription = function() { return this.$val.GetDescription(); };
+	NewGene = function(name, str, dex, con, intelligence, wis, cha, weightClass, abilities) {
+		var $ptr, abilities, cha, con, dex, intelligence, name, str, weightClass, wis;
+		return new Gene.ptr(name, str, dex, con, intelligence, wis, cha, weightClass, abilities);
+	};
+	$pkg.NewGene = NewGene;
 	addGeneButton = function(document, character, gene) {
 		var $ptr, button, character, destinationElement, document, gene;
-		gene = $clone(gene, Gene);
 		destinationElement = $global.buttonplace;
 		button = NewButton(document, gene.Name, (function $b() {
 			var $ptr, _r, $s, $r;
@@ -17792,11 +17813,11 @@ $packages["github.com/Armienn/GoLundin/files/js/waeraeld"] = (function() {
 		return document.Object.createElement($externalize(tagName, $String));
 	};
 	Document.prototype.CreateElement = function(tagName) { return this.$val.CreateElement(tagName); };
-	ptrType.methods = [{prop: "UpdateStats", name: "UpdateStats", pkg: "", typ: $funcType([], [], false)}, {prop: "GetDescription", name: "GetDescription", pkg: "", typ: $funcType([], [$String], false)}];
-	ptrType$2.methods = [{prop: "CreateElement", name: "CreateElement", pkg: "", typ: $funcType([$String], [ptrType$1], false)}];
-	Character.init("", [{prop: "Genes", name: "Genes", exported: true, typ: sliceType, tag: ""}, {prop: "STR", name: "STR", exported: true, typ: $Int, tag: ""}, {prop: "DEX", name: "DEX", exported: true, typ: $Int, tag: ""}, {prop: "CON", name: "CON", exported: true, typ: $Int, tag: ""}, {prop: "INT", name: "INT", exported: true, typ: $Int, tag: ""}, {prop: "WIS", name: "WIS", exported: true, typ: $Int, tag: ""}, {prop: "CHA", name: "CHA", exported: true, typ: $Int, tag: ""}, {prop: "WeightClass", name: "WeightClass", exported: true, typ: $Int, tag: ""}]);
-	Gene.init("", [{prop: "Name", name: "Name", exported: true, typ: $String, tag: ""}, {prop: "STR", name: "STR", exported: true, typ: $Int, tag: ""}, {prop: "DEX", name: "DEX", exported: true, typ: $Int, tag: ""}, {prop: "CON", name: "CON", exported: true, typ: $Int, tag: ""}, {prop: "INT", name: "INT", exported: true, typ: $Int, tag: ""}, {prop: "WIS", name: "WIS", exported: true, typ: $Int, tag: ""}, {prop: "CHA", name: "CHA", exported: true, typ: $Int, tag: ""}, {prop: "WeightClass", name: "WeightClass", exported: true, typ: $Int, tag: ""}]);
-	Document.init("", [{prop: "Object", name: "", exported: true, typ: ptrType$1, tag: ""}]);
+	ptrType$1.methods = [{prop: "UpdateStats", name: "UpdateStats", pkg: "", typ: $funcType([], [], false)}, {prop: "GetDescription", name: "GetDescription", pkg: "", typ: $funcType([], [$String], false)}];
+	ptrType$3.methods = [{prop: "CreateElement", name: "CreateElement", pkg: "", typ: $funcType([$String], [ptrType$2], false)}];
+	Character.init("", [{prop: "Genes", name: "Genes", exported: true, typ: sliceType, tag: ""}, {prop: "STR", name: "STR", exported: true, typ: $Int, tag: ""}, {prop: "DEX", name: "DEX", exported: true, typ: $Int, tag: ""}, {prop: "CON", name: "CON", exported: true, typ: $Int, tag: ""}, {prop: "INT", name: "INT", exported: true, typ: $Int, tag: ""}, {prop: "WIS", name: "WIS", exported: true, typ: $Int, tag: ""}, {prop: "CHA", name: "CHA", exported: true, typ: $Int, tag: ""}, {prop: "WeightClass", name: "WeightClass", exported: true, typ: $Int, tag: ""}, {prop: "Abilities", name: "Abilities", exported: true, typ: sliceType$1, tag: ""}]);
+	Gene.init("", [{prop: "Name", name: "Name", exported: true, typ: $String, tag: ""}, {prop: "STR", name: "STR", exported: true, typ: $Int, tag: ""}, {prop: "DEX", name: "DEX", exported: true, typ: $Int, tag: ""}, {prop: "CON", name: "CON", exported: true, typ: $Int, tag: ""}, {prop: "INT", name: "INT", exported: true, typ: $Int, tag: ""}, {prop: "WIS", name: "WIS", exported: true, typ: $Int, tag: ""}, {prop: "CHA", name: "CHA", exported: true, typ: $Int, tag: ""}, {prop: "WeightClass", name: "WeightClass", exported: true, typ: $Int, tag: ""}, {prop: "Abilities", name: "Abilities", exported: true, typ: sliceType$1, tag: ""}]);
+	Document.init("", [{prop: "Object", name: "", exported: true, typ: ptrType$2, tag: ""}]);
 	$init = function() {
 		$pkg.$init = function() {};
 		/* */ var $f, $c = false, $s = 0, $r; if (this !== undefined && this.$blk !== undefined) { $f = this; $c = true; $s = $f.$s; $r = $f.$r; } s: while (true) { switch ($s) { case 0:

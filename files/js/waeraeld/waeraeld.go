@@ -5,16 +5,17 @@ import "fmt"
 
 func main() {
 	character := new(Character)
-	character.Genes = make([]Gene, 0)
-	genes := []Gene{
-		{"Endoskelet", 10, 12, 10, 10, 10, 10, 10},
-		{"Exoskelet", 12, 10, 12, 10, 10, 10, 15},
+	character.Genes = make([]*Gene, 0)
+	genes := []*Gene{
+		NewGene("Endoskelet", 10, 12, 10, 10, 10, 10, 10),
+		NewGene("Exoskelet", 12, 10, 12, 10, 10, 10, 15),
+		NewGene("Lunger", 0, 0, 0, 0, 0, 0, 1, "Trække vejret i luft", "Holde vejret"),
 	}
 	document := GetDocument()
 
 	destinationElement := js.Global.Get("otherplace")
 	button := NewButton(document, "Clear", func() {
-		character.Genes = make([]Gene, 0)
+		character.Genes = make([]*Gene, 0)
 		js.Global.Get("outputText").Set("innerHTML", character.GetDescription())
 	})
 	destinationElement.Call("appendChild", button)
@@ -27,7 +28,7 @@ func main() {
 }
 
 type Character struct {
-	Genes       []Gene
+	Genes       []*Gene
 	STR         int
 	DEX         int
 	CON         int
@@ -35,6 +36,7 @@ type Character struct {
 	WIS         int
 	CHA         int
 	WeightClass int
+	Abilities   []string
 }
 
 func (character *Character) UpdateStats() {
@@ -45,6 +47,7 @@ func (character *Character) UpdateStats() {
 	character.WIS = 0
 	character.CHA = 0
 	character.WeightClass = 0
+	character.Abilities = []string{}
 	for _, gene := range character.Genes {
 		character.STR += gene.STR
 		character.DEX += gene.DEX
@@ -53,12 +56,17 @@ func (character *Character) UpdateStats() {
 		character.WIS += gene.WIS
 		character.CHA += gene.CHA
 		character.WeightClass += gene.WeightClass
+		character.Abilities = append(character.Abilities, gene.Abilities...)
 	}
 }
 
 func (character *Character) GetDescription() string {
 	character.UpdateStats()
-	return fmt.Sprintf(`
+	description := ""
+	for _, ability := range character.Abilities {
+		description += "Ability: " + ability + "<br/>"
+	}
+	return description + fmt.Sprintf(`
 	STR: %d <br/>
 	DEX: %d <br/>
 	CON: %d <br/>
@@ -85,9 +93,14 @@ type Gene struct {
 	WIS         int
 	CHA         int
 	WeightClass int
+	Abilities   []string
 }
 
-func addGeneButton(document *Document, character *Character, gene Gene) {
+func NewGene(name string, str int, dex int, con int, intelligence int, wis int, cha int, weightClass int, abilities ...string) *Gene {
+	return &Gene{name, str, dex, con, intelligence, wis, cha, weightClass, abilities}
+}
+
+func addGeneButton(document *Document, character *Character, gene *Gene) {
 	destinationElement := js.Global.Get("buttonplace")
 	button := NewButton(document, gene.Name, func() {
 		character.Genes = append(character.Genes, gene)
