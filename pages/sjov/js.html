@@ -8,11 +8,10 @@
 		</div>
 		
 		<div style="display: table; margin-bottom: 1rem; width: 100%;">
-			<button type="button" style="width: 10rem;" onclick="eval(document.getElementById('jsinput').innerHTML);">Kør</button>
-			<textarea class="subtle-input" id="jsinput" style="width: 100%; height: 32rem;">document.getElementById('jsbox').innerHTML = "Hej du";</textarea>
+			<button type="button" style="width: 10rem;" onclick="eval(document.getElementById('jsinput').value);">Kør</button>
+			<textarea class="subtle-input" id="jsinput" style="width: 100%; height: 32rem; font-family: Consolas;">document.getElementById('jsbox').innerHTML = "Hej du";</textarea>
 		</div>
 
 	</div>
 </div>
-<script src="/files/js/golanguage/golanguage.js"></script>
 {{template "base-end" .}}
