@@ -24,7 +24,7 @@ func main() {
 	for _, user := range users {
 		server.AddUser(user.Name, user.Password)
 	}
-	server.ServeOnPort(":8008")
+	server.ServeOnPort(":80") //93.184.206.223
 }
 
 type MainData struct {
