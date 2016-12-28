@@ -127,13 +127,23 @@ func threadPostHandler(w http.ResponseWriter, r *http.Request, info goserver.Inf
 			}
 		}
 	} else {
-		thread.ID = 0
-		for _, existingThread := range threads {
-			if thread.ID <= existingThread.ID {
-				thread.ID = existingThread.ID + 1
+		if thread.ID == 0 {
+			//add
+			for _, existingThread := range threads {
+				if thread.ID <= existingThread.ID {
+					thread.ID = existingThread.ID + 1
+				}
+			}
+			threads = append(threads, *thread)
+		} else {
+			//update
+			for i, existingThread := range threads {
+				if thread.ID == existingThread.ID {
+					threads[i] = *thread
+					break
+				}
 			}
 		}
-		threads = append(threads, *thread)
 	}
 	jsonThreads := toJson(threads)
 	ioutil.WriteFile("threads.json", []byte(jsonThreads), 0)
