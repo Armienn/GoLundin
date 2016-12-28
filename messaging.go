@@ -12,6 +12,15 @@ import (
 	"github.com/Armienn/GoServer"
 )
 
+type ForumData struct {
+	MainData
+	Threads []Thread
+}
+
+func NewForumData(threads []Thread, user string, scripts ...string) *ForumData {
+	return &ForumData{MainData{scripts, user}, threads}
+}
+
 type ThreadData struct {
 	MainData
 	Thread
@@ -25,6 +34,7 @@ type Thread struct {
 	ID          int
 	Title       string
 	MainMessage string
+	Section     string
 	Responses   []Thread
 	Author      string
 	Time        time.Time
@@ -50,7 +60,7 @@ func threadGetHandler(w http.ResponseWriter, r *http.Request, info goserver.Info
 	}
 	id, err := strconv.Atoi(info.Path)
 	if err != nil {
-		w.Write([]byte("Fejl: " + err.Error()))
+		showSection(w, info)
 		return
 	}
 	threads := loadThreads()
@@ -69,8 +79,25 @@ func threadGetHandler(w http.ResponseWriter, r *http.Request, info goserver.Info
 	}
 }
 
+func showSection(w http.ResponseWriter, info goserver.Info) {
+	threads := loadThreads()
+	section := []Thread{}
+	for _, thread := range threads {
+		if thread.Section == info.Path || (info.Path == "andet" && thread.Section == "") {
+			section = append(section, thread)
+		}
+	}
+	data := NewForumData(section, info.User())
+	temp, err := template.ParseFiles("pages/frontpage.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar.html")
+	if err != nil {
+		w.Write([]byte("Fejl: " + err.Error()))
+	} else {
+		temp.Execute(w, data)
+	}
+}
+
 func showNewThreadPage(w http.ResponseWriter, info goserver.Info) {
-	data := NewMainData(info.User(), "/files/js/golanguage/golanguage.js")
+	data := NewMainData(info.User())
 	temp, err := template.ParseFiles("pages/new-thread.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar.html")
 	if err != nil {
 		w.Write([]byte("Fejl: " + err.Error()))
@@ -134,6 +161,7 @@ func ThreadFromForm(w http.ResponseWriter, r *http.Request, info goserver.Info) 
 		w.Write([]byte("Fejl: Mangler besked"))
 		return nil, false
 	}
+	thread.Section, ok = FromForm(r, "section")
 	thread.Author = info.User()
 	thread.Time = time.Now()
 	return thread, true

@@ -32,15 +32,6 @@ type MainData struct {
 	User    string
 }
 
-type ForumData struct {
-	MainData
-	Threads []Thread
-}
-
-func NewForumData(threads []Thread, user string, scripts ...string) *ForumData {
-	return &ForumData{MainData{scripts, user}, threads}
-}
-
 func NewMainData(user string, scripts ...string) *MainData {
 	return &MainData{scripts, user}
 }
