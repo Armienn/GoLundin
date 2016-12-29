@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 
 	"github.com/Armienn/GoServer"
+	"github.com/russross/blackfriday"
 )
 
 type ForumData struct {
@@ -38,6 +39,10 @@ type Thread struct {
 	Responses   []Thread
 	Author      string
 	Time        time.Time
+}
+
+func (thread Thread) Markdown() template.HTML {
+	return template.HTML(string(blackfriday.MarkdownBasic([]byte(thread.MainMessage))))
 }
 
 func loadThreads() []Thread {
