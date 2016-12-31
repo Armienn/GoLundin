@@ -53,7 +53,7 @@ func sjovHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
 	if len(info.Path) == 0 {
 		info.Path = "js"
 	}
-	temp, err := template.ParseFiles("pages/sjov/"+info.Path+".html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/kode-sidebar.html")
+	temp, err := template.ParseFiles("pages/sjov/"+info.Path+".html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar-code.html")
 	if err != nil {
 		w.Write([]byte("Fejl: " + err.Error()))
 	} else {
