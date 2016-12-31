@@ -15,7 +15,8 @@ import (
 func main() {
 	server := goserver.NewServer(true)
 	server.AddHandlerFrom(goserver.HandlerInfo{"/login", loginGetHandler, loginPostHandler, true})
-	server.AddHandlerFrom(goserver.HandlerInfo{"/files/", fileHandler, nil, true})
+	server.AddHandlerFrom(goserver.HandlerInfo{"/static/", staticFileHandler, nil, true})
+	server.AddHandlerFrom(goserver.HandlerInfo{"/files/", fileHandler, nil, false})
 	server.AddHandler("/sjov/", sjovHandler)
 	server.AddHandlerFrom(goserver.HandlerInfo{"/beskeder", nil, threadPostHandler, false})              //TODO
 	server.AddHandlerFrom(goserver.HandlerInfo{"/beskeder/", threadGetHandler, nil, false})              //TODO
@@ -65,11 +66,17 @@ func fileHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
 	if strings.HasSuffix(info.Path, ".css") {
 		w.Header().Set("Content-Type", "text/css")
 		w.WriteHeader(http.StatusOK)
-	} else if info.User() == "" {
-		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
-		return
 	}
 	file, _ := ioutil.ReadFile("files/" + info.Path)
+	w.Write(file)
+}
+
+func staticFileHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
+	if strings.HasSuffix(info.Path, ".css") {
+		w.Header().Set("Content-Type", "text/css")
+		w.WriteHeader(http.StatusOK)
+	}
+	file, _ := ioutil.ReadFile("static/" + info.Path)
 	w.Write(file)
 }
 
