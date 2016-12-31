@@ -4,9 +4,9 @@
 	{{template "sidebar-images" .}}
 	<div class="inner-body">
 		
-		{{range $index, $file := .Files}}
+		{{range $index, $name := .Images}}
 		<div class="image-thumbnail">
-			<image style="width: 16rem;" src="static/images/{{$file.Name}}"/>
+			<image style="width: 16rem;" src="/files/images/{{$name}}"/>
 		</div>
 		{{end}}
 

@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"os"
 
+	"strings"
+
 	"github.com/Armienn/GoServer"
 )
 
@@ -16,6 +18,10 @@ func imagesPostHandler(w http.ResponseWriter, r *http.Request, info goserver.Inf
 	if err != nil {
 		w.Write([]byte("Fejl: " + err.Error()))
 		return
+	}
+	path := "files/images/" + info.User() + "/"
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		os.Mkdir(path, os.ModePerm)
 	}
 
 	for _, fileHeaders := range r.MultipartForm.File {
@@ -27,7 +33,7 @@ func imagesPostHandler(w http.ResponseWriter, r *http.Request, info goserver.Inf
 			}
 			defer file.Close()
 			var outfile *os.File
-			if outfile, err = os.Create("./uploaded/" + fileHeader.Filename); nil != err {
+			if outfile, err = os.Create(path + fileHeader.Filename); nil != err {
 				w.Write([]byte("Fejl: " + err.Error()))
 				return
 			}
@@ -43,11 +49,30 @@ func imagesPostHandler(w http.ResponseWriter, r *http.Request, info goserver.Inf
 
 type FileData struct {
 	MainData
-	Files []os.FileInfo
+	Images      []string
+	Directories []string
 }
 
-func NewFileData(files []os.FileInfo, user string, scripts ...string) *FileData {
-	return &FileData{MainData{scripts, user}, files}
+func NewFileData(directory string, subDirectory string, user string, scripts ...string) *FileData {
+	files, _ := ioutil.ReadDir(directory)
+	images := []string{}
+	directories := []string{}
+	for _, file := range files {
+		if file.IsDir() {
+			directories = append(directories, file.Name())
+		}
+	}
+	files, _ = ioutil.ReadDir(directory + subDirectory)
+	for _, file := range files {
+		if !file.IsDir() && strings.HasSuffix(file.Name(), "jpg") || strings.HasSuffix(file.Name(), "png") {
+			if subDirectory == "" {
+				images = append(images, file.Name())
+			} else {
+				images = append(images, subDirectory+"/"+file.Name())
+			}
+		}
+	}
+	return &FileData{MainData{scripts, user}, images, directories}
 }
 
 func imagesGetHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
@@ -55,8 +80,7 @@ func imagesGetHandler(w http.ResponseWriter, r *http.Request, info goserver.Info
 		showNewImagePage(w, info)
 		return
 	}
-	files, _ := ioutil.ReadDir("files/images/")
-	data := NewFileData(files, info.User())
+	data := NewFileData("files/images/", info.Path, info.User())
 	temp, err := template.ParseFiles("pages/images.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar-images.html")
 	if err != nil {
 		w.Write([]byte("Fejl: " + err.Error()))
@@ -66,7 +90,7 @@ func imagesGetHandler(w http.ResponseWriter, r *http.Request, info goserver.Info
 }
 
 func showNewImagePage(w http.ResponseWriter, info goserver.Info) {
-	data := NewMainData(info.User())
+	data := NewFileData("files/images/", "", info.User())
 	temp, err := template.ParseFiles("pages/images-new.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar-images.html")
 	if err != nil {
 		w.Write([]byte("Fejl: " + err.Error()))
