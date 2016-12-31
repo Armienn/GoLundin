@@ -17,8 +17,10 @@ func main() {
 	server.AddHandlerFrom(goserver.HandlerInfo{"/login", loginGetHandler, loginPostHandler, true})
 	server.AddHandlerFrom(goserver.HandlerInfo{"/files/", fileHandler, nil, true})
 	server.AddHandler("/sjov/", sjovHandler)
-	server.AddHandlerFrom(goserver.HandlerInfo{"/beskeder", nil, threadPostHandler, false}) //TODO
-	server.AddHandlerFrom(goserver.HandlerInfo{"/beskeder/", threadGetHandler, nil, false}) //TODO
+	server.AddHandlerFrom(goserver.HandlerInfo{"/beskeder", nil, threadPostHandler, false})              //TODO
+	server.AddHandlerFrom(goserver.HandlerInfo{"/beskeder/", threadGetHandler, nil, false})              //TODO
+	server.AddHandlerFrom(goserver.HandlerInfo{"/billeder", imagesGetHandler, imagesPostHandler, false}) //TODO
+	server.AddHandlerFrom(goserver.HandlerInfo{"/billeder/", imagesGetHandler, nil, false})              //TODO
 	server.AddHandler("/", mainHandler)
 	users := loadUsers()
 	for _, user := range users {

@@ -1,0 +1,14 @@
+{{template "base-start" .}}
+{{template "header" .}}
+<div class="main-body">
+	{{template "sidebar" .}}
+	<div class="inner-body">
+		
+		<form action="/billeder" method="post" enctype="multipart/form-data">
+			<input type="file" name="billede"/>
+			<input type="submit" name="billeder" value="Upload"/>
+		</form>
+
+	</div>
+</div>
+{{template "base-end" .}}
