@@ -168,3 +168,11 @@ input, textarea{
 .fancy-link:hover {
 	background-color:#bc3315;
 }
+
+.image-thumbnail {
+    width: 16rem;
+    margin: 0.5rem;
+    float: left;
+		height: 9rem;
+		overflow: hidden;
+}

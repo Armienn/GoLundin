@@ -103,7 +103,7 @@ func showSection(w http.ResponseWriter, info goserver.Info) {
 
 func showNewThreadPage(w http.ResponseWriter, info goserver.Info) {
 	data := NewMainData(info.User())
-	temp, err := template.ParseFiles("pages/new-thread.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar.html")
+	temp, err := template.ParseFiles("pages/thread-new.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar.html")
 	if err != nil {
 		w.Write([]byte("Fejl: " + err.Error()))
 	} else {

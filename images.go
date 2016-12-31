@@ -3,6 +3,7 @@ package main
 import (
 	"html/template"
 	"io"
+	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -40,9 +41,33 @@ func imagesPostHandler(w http.ResponseWriter, r *http.Request, info goserver.Inf
 	imagesGetHandler(w, r, info)
 }
 
+type FileData struct {
+	MainData
+	Files []os.FileInfo
+}
+
+func NewFileData(files []os.FileInfo, user string, scripts ...string) *FileData {
+	return &FileData{MainData{scripts, user}, files}
+}
+
 func imagesGetHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
+	if info.Path == "ny" {
+		showNewImagePage(w, info)
+		return
+	}
+	files, _ := ioutil.ReadDir("files/images/")
+	data := NewFileData(files, info.User())
+	temp, err := template.ParseFiles("pages/images.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar-images.html")
+	if err != nil {
+		w.Write([]byte("Fejl: " + err.Error()))
+	} else {
+		temp.Execute(w, data)
+	}
+}
+
+func showNewImagePage(w http.ResponseWriter, info goserver.Info) {
 	data := NewMainData(info.User())
-	temp, err := template.ParseFiles("pages/images.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar.html")
+	temp, err := template.ParseFiles("pages/images-new.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar-images.html")
 	if err != nil {
 		w.Write([]byte("Fejl: " + err.Error()))
 	} else {

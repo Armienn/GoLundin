@@ -4,11 +4,10 @@
 	{{template "sidebar-images" .}}
 	<div class="inner-body">
 		
-		{{range $index, $file := .Files}}
-		<div class="image-thumbnail">
-			<image style="width: 16rem;" src="files/images/{{$file.Name}}"/>
-		</div>
-		{{end}}
+		<form action="/billeder" method="post" enctype="multipart/form-data">
+			<input type="file" name="billede"/>
+			<input type="submit" name="billeder" value="Upload"/>
+		</form>
 
 	</div>
 </div>
