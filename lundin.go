@@ -14,15 +14,17 @@ import (
 
 func main() {
 	server := goserver.NewServer(true)
-	server.AddHandlerFrom(goserver.HandlerInfo{"/login", loginGetHandler, loginPostHandler, true})
-	server.AddHandlerFrom(goserver.HandlerInfo{"/static/", staticFileHandler, nil, true})
-	server.AddHandlerFrom(goserver.HandlerInfo{"/files/", fileHandler, nil, false})
-	server.AddHandler("/sjov/", sjovHandler)
-	server.AddHandlerFrom(goserver.HandlerInfo{"/beskeder", nil, threadPostHandler, false})              //TODO
-	server.AddHandlerFrom(goserver.HandlerInfo{"/beskeder/", threadGetHandler, nil, false})              //TODO
-	server.AddHandlerFrom(goserver.HandlerInfo{"/billeder", imagesGetHandler, imagesPostHandler, false}) //TODO
-	server.AddHandlerFrom(goserver.HandlerInfo{"/billeder/", imagesGetHandler, nil, false})              //TODO
-	server.AddHandler("/", mainHandler)
+	server.AddGetHandler("/login", loginGetHandler, false)
+	server.AddPostHandler("/login", loginPostHandler, false)
+	server.AddGetHandler("/static/", staticFileHandler, false)
+	server.AddGetHandler("/files/", fileHandler, true)
+	server.AddGetHandler("/sjov/", sjovHandler, true)
+	server.AddPostHandler("/beskeder", threadPostHandler, true)
+	server.AddGetHandler("/beskeder/", threadGetHandler, true)
+	server.AddPostHandler("/billeder", imagesPostHandler, true)
+	server.AddGetHandler("/billeder", imagesGetHandler, true)
+	server.AddGetHandler("/billeder/", imagesGetHandler, true)
+	server.AddGetHandler("/", mainHandler, true)
 	users := loadUsers()
 	for _, user := range users {
 		server.AddUser(user.Name, user.Password)
