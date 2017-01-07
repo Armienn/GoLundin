@@ -6,6 +6,10 @@ canvas.width = 800
 canvas.height = 660
 var ctx = canvas.getContext('2d')
 
+//-------------------------------------------------------------------------------------
+// https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Drawing_shapes
+//-------------------------------------------------------------------------------------
+
 function clear() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 }
