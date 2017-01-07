@@ -18,6 +18,7 @@ func main() {
 	server.AddPostHandler("/login", loginPostHandler, false)
 	server.AddGetHandler("/static/", staticFileHandler, false)
 	server.AddGetHandler("/files/", fileHandler, true)
+	server.AddPostHandler("/save/", saveHandler, true)
 	server.AddGetHandler("/sjov/", sjovHandler, true)
 	server.AddPostHandler("/beskeder", threadPostHandler, true)
 	server.AddGetHandler("/beskeder/", threadGetHandler, true)
@@ -52,8 +53,16 @@ func mainHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
 }
 
 func sjovHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
-	data := NewMainData(info.User())
+	data := struct {
+		MainData
+		Code string
+	}{MainData{nil, info.User()}, "document.getElementById('jsbox').innerHTML = \"Hej du\";"}
 	if len(info.Path) == 0 {
+		info.Path = "js"
+	}
+	if strings.HasPrefix(info.Path, "js/") {
+		file, _ := ioutil.ReadFile("files/" + info.Path + ".js")
+		data.Code = string(file)
 		info.Path = "js"
 	}
 	temp, err := template.ParseFiles("pages/sjov/"+info.Path+".html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar-code.html")
@@ -80,6 +89,26 @@ func staticFileHandler(w http.ResponseWriter, r *http.Request, info goserver.Inf
 	}
 	file, _ := ioutil.ReadFile("static/" + info.Path)
 	w.Write(file)
+}
+
+func saveHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
+	r.ParseForm()
+	destination := "/"
+	if info.Path == "js" {
+		text, ok := FromForm(r, "code")
+		if !ok {
+			w.Write([]byte("Fejl: Couldn't parse form"))
+			return
+		}
+		name, ok := FromForm(r, "title")
+		if !ok {
+			w.Write([]byte("Fejl: Couldn't parse form"))
+			return
+		}
+		ioutil.WriteFile("files/js/"+name+".js", []byte(text), 0)
+		destination = "/sjov/js/" + name
+	}
+	http.Redirect(w, r, destination, http.StatusTemporaryRedirect)
 }
 
 func toJson(thing interface{}) string {
