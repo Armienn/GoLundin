@@ -1,1 +1,0 @@
-document.getElementById('jsbox').innerHTML = "Hej mulle";
