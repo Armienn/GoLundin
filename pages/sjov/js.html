@@ -3,19 +3,47 @@
 <div class="main-body">
 {{template "sidebar-code"}}
 	<div class="inner-body">
+
+		<style type="text/css" media="screen">
+			#mulle {
+				overflow: hidden;
+				width: 100%;
+				height: 50rem;
+			}
+			#editor {
+				margin: 0;
+				position: relative;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				height: 100%;
+				width: 100%;
+			}
+		</style>
 		
 		<div id="jsbox" style="display: table; margin-bottom: 1rem; width: 100%;">
 		</div>
 		
 		<form action="/save/js" method="post" style="display: table; margin-bottom: 1rem; width: 100%;">
-			<button type="button" style="width: 10rem;" onclick="eval(document.getElementById('code').value);">Kør</button>
+			<button type="button" style="width: 10rem;" onclick="eval(editor.getValue());">Kør</button>
 			<input class="subtle-input" type="text" id="title" name="title" style="width: 10rem;" value="{{.Title}}"/>
-			<button type="submit" style="width: 10rem;" name="submit">Gem</button>
+			<button type="submit" style="width: 10rem;" name="submit" onclick="document.getElementById('code').value = editor.getValue();">Gem</button>
 			{{range $index, $file := .Files}}
 			<a class="fancy-link" href="/sjov/js/{{$file}}">{{$file}}</a>
 			{{end}}
-			<textarea class="subtle-input" id="code" style="width: 100%; height: 32rem; font-family: Consolas;" name="code">{{.Code}}</textarea>
+			<input type="hidden" id="code" name="code" value="{{.Code}}"/>
+			<div id="mulle">
+				<pre id="editor">{{.Code}}</pre>
+			</div>
 		</form>
+
+		<script src="/static/js/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+				var editor = ace.edit("editor");
+				editor.setTheme("ace/theme/tomorrow_night_eighties");
+				editor.session.setMode("ace/mode/javascript");
+		</script>
 
 	</div>
 </div>
