@@ -55,15 +55,26 @@ func mainHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
 func sjovHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
 	data := struct {
 		MainData
-		Code string
-	}{MainData{nil, info.User()}, "document.getElementById('jsbox').innerHTML = \"Hej du\";"}
+		Title string
+		Code  string
+		Files []string
+	}{MainData{nil, info.User()}, "", "document.getElementById('jsbox').innerHTML = \"Hej du\";", []string{}}
 	if len(info.Path) == 0 {
 		info.Path = "js"
 	}
-	if strings.HasPrefix(info.Path, "js/") {
-		file, _ := ioutil.ReadFile("files/" + info.Path + ".js")
-		data.Code = string(file)
-		info.Path = "js"
+	if strings.HasPrefix(info.Path, "js") {
+		files, _ := ioutil.ReadDir("files/js/")
+		for _, file := range files {
+			if !file.IsDir() && strings.HasSuffix(file.Name(), "js") {
+				data.Files = append(data.Files, file.Name()[:len(file.Name())-3])
+			}
+		}
+		if strings.HasPrefix(info.Path, "js/") {
+			data.Title = info.Path[3:]
+			code, _ := ioutil.ReadFile("files/" + info.Path + ".js")
+			data.Code = string(code)
+			info.Path = "js"
+		}
 	}
 	temp, err := template.ParseFiles("pages/sjov/"+info.Path+".html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar-code.html")
 	if err != nil {
