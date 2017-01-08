@@ -13,6 +13,24 @@ import (
 	"github.com/russross/blackfriday"
 )
 
+func RegisterThreads(server *goserver.Server) {
+	server.AddPostHandler("/beskeder/add", threadPostAdd, true)
+	server.AddPostHandler("/beskeder/edit", threadPostEdit, true)
+	server.AddPostHandler("/beskeder/delete", threadPostDelete, true)
+	server.AddGetHandler("/beskeder/add", threadGetAdd, true)
+	server.AddGetHandler("/beskeder/", threadGet, true)
+}
+
+type Thread struct {
+	ID          int
+	Title       string
+	MainMessage string
+	Section     string
+	Responses   []Thread
+	Author      string
+	Time        time.Time
+}
+
 type ForumData struct {
 	MainData
 	Threads []Thread
@@ -29,16 +47,6 @@ type ThreadData struct {
 
 func NewThreadData(thread Thread, user string, scripts ...string) *ThreadData {
 	return &ThreadData{MainData{scripts, user}, thread}
-}
-
-type Thread struct {
-	ID          int
-	Title       string
-	MainMessage string
-	Section     string
-	Responses   []Thread
-	Author      string
-	Time        time.Time
 }
 
 func (thread Thread) Markdown() template.HTML {
@@ -58,11 +66,17 @@ func loadThreads() []Thread {
 	return threads
 }
 
-func threadGetHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
-	if info.Path == "ny" {
-		showNewThreadPage(w, info)
-		return
+func threadGetAdd(w http.ResponseWriter, r *http.Request, info goserver.Info) {
+	data := NewMainData(info.User())
+	temp, err := template.ParseFiles("pages/thread-new.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar.html")
+	if err != nil {
+		w.Write([]byte("Fejl: " + err.Error()))
+	} else {
+		temp.Execute(w, data)
 	}
+}
+
+func threadGet(w http.ResponseWriter, r *http.Request, info goserver.Info) {
 	id, err := strconv.Atoi(info.Path)
 	if err != nil {
 		showSection(w, info)
@@ -101,17 +115,7 @@ func showSection(w http.ResponseWriter, info goserver.Info) {
 	}
 }
 
-func showNewThreadPage(w http.ResponseWriter, info goserver.Info) {
-	data := NewMainData(info.User())
-	temp, err := template.ParseFiles("pages/thread-new.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar.html")
-	if err != nil {
-		w.Write([]byte("Fejl: " + err.Error()))
-	} else {
-		temp.Execute(w, data)
-	}
-}
-
-func threadPostHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
+func threadPostAdd(w http.ResponseWriter, r *http.Request, info goserver.Info) {
 	r.ParseForm()
 	thread, ok := ThreadFromForm(w, r, info)
 	if !ok {
@@ -132,27 +136,56 @@ func threadPostHandler(w http.ResponseWriter, r *http.Request, info goserver.Inf
 			}
 		}
 	} else {
-		if thread.ID == 0 {
-			//add
-			for _, existingThread := range threads {
-				if thread.ID <= existingThread.ID {
-					thread.ID = existingThread.ID + 1
-				}
+		for _, existingThread := range threads {
+			if thread.ID <= existingThread.ID {
+				thread.ID = existingThread.ID + 1
 			}
-			threads = append(threads, *thread)
-		} else {
-			//update
-			for i, existingThread := range threads {
-				if thread.ID == existingThread.ID {
-					threads[i] = *thread
-					break
-				}
-			}
+		}
+		threads = append(threads, *thread)
+	}
+	jsonThreads := toJson(threads)
+	ioutil.WriteFile("threads.json", []byte(jsonThreads), 0)
+	http.Redirect(w, r, "/beskeder/"+strconv.Itoa(thread.ID), http.StatusTemporaryRedirect)
+}
+
+func threadPostEdit(w http.ResponseWriter, r *http.Request, info goserver.Info) {
+	r.ParseForm()
+	thread, ok := ThreadFromForm(w, r, info)
+	if !ok {
+		return
+	}
+	threads := loadThreads()
+	for i, existingThread := range threads {
+		if thread.ID == existingThread.ID {
+			threads[i] = *thread
+			break
 		}
 	}
 	jsonThreads := toJson(threads)
 	ioutil.WriteFile("threads.json", []byte(jsonThreads), 0)
 	http.Redirect(w, r, "/beskeder/"+strconv.Itoa(thread.ID), http.StatusTemporaryRedirect)
+}
+
+func threadPostDelete(w http.ResponseWriter, r *http.Request, info goserver.Info) {
+	r.ParseForm()
+	idstring, ok := FromForm(r, "thread")
+	if !ok {
+		return
+	}
+	id, err := strconv.Atoi(idstring)
+	if err != nil {
+		return
+	}
+	threads := loadThreads()
+	for i, existingThread := range threads {
+		if id == existingThread.ID {
+			threads = append(threads[:i], threads[i+1:]...)
+			break
+		}
+	}
+	jsonThreads := toJson(threads)
+	ioutil.WriteFile("threads.json", []byte(jsonThreads), 0)
+	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }
 
 func ThreadFromForm(w http.ResponseWriter, r *http.Request, info goserver.Info) (*Thread, bool) {
