@@ -16,7 +16,7 @@ type User struct {
 }
 
 func loadUsers() []User {
-	file, err := ioutil.ReadFile("data/users.json")
+	file, err := ioutil.ReadFile("users.json")
 	if err != nil {
 		panic(err)
 	}

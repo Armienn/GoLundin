@@ -1,6 +1,7 @@
 package main
 
 import (
+	"html/template"
 	"io/ioutil"
 	"net/http"
 
@@ -15,10 +16,14 @@ func main() {
 	server := goserver.NewServer(true)
 	server.AddGetHandler("/login", loginGetHandler, false)
 	server.AddPostHandler("/login", loginPostHandler, false)
+	server.AddGetHandler("/static/", staticFileHandler, false)
 	server.AddGetHandler("/files/", fileHandler, true)
 	server.AddPostHandler("/save/", saveHandler, true)
+	server.AddGetHandler("/sjov/", sjovHandler, true)
+	RegisterThreads(server)
 	server.AddPostHandler("/billeder", imagesPostHandler, true)
-	ThreadAPI(server, "/beskeder/")
+	server.AddGetHandler("/billeder", imagesGetHandler, true)
+	server.AddGetHandler("/billeder/", imagesGetHandler, true)
 	server.AddGetHandler("/", mainHandler, true)
 	users := loadUsers()
 	for _, user := range users {
@@ -37,8 +42,45 @@ func NewMainData(user string, scripts ...string) *MainData {
 }
 
 func mainHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
-	file, _ := ioutil.ReadFile("index.html")
-	w.Write(file)
+	data := NewForumData(loadThreads(), info.User())
+	temp, err := template.ParseFiles("pages/frontpage.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar.html")
+	if err != nil {
+		w.Write([]byte("Fejl: " + err.Error()))
+	} else {
+		temp.Execute(w, data)
+	}
+}
+
+func sjovHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
+	data := struct {
+		MainData
+		Title string
+		Code  string
+		Files []string
+	}{MainData{nil, info.User()}, "", "document.getElementById('jsbox').innerHTML = \"Hej du\";", []string{}}
+	if len(info.Path) == 0 {
+		info.Path = "js"
+	}
+	if strings.HasPrefix(info.Path, "js") {
+		files, _ := ioutil.ReadDir("files/js/")
+		for _, file := range files {
+			if !file.IsDir() && strings.HasSuffix(file.Name(), "js") {
+				data.Files = append(data.Files, file.Name()[:len(file.Name())-3])
+			}
+		}
+		if strings.HasPrefix(info.Path, "js/") {
+			data.Title = info.Path[3:]
+			code, _ := ioutil.ReadFile("files/" + info.Path + ".js")
+			data.Code = string(code)
+			info.Path = "js"
+		}
+	}
+	temp, err := template.ParseFiles("pages/sjov/"+info.Path+".html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar-code.html")
+	if err != nil {
+		w.Write([]byte("Fejl: " + err.Error()))
+	} else {
+		temp.Execute(w, data)
+	}
 }
 
 func fileHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
@@ -47,6 +89,15 @@ func fileHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
 		w.WriteHeader(http.StatusOK)
 	}
 	file, _ := ioutil.ReadFile("files/" + info.Path)
+	w.Write(file)
+}
+
+func staticFileHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
+	if strings.HasSuffix(info.Path, ".css") {
+		w.Header().Set("Content-Type", "text/css")
+		w.WriteHeader(http.StatusOK)
+	}
+	file, _ := ioutil.ReadFile("static/" + info.Path)
 	w.Write(file)
 }
 

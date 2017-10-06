@@ -1,0 +1,6 @@
+debug
+.vscode/
+users.json
+threads.json
+files/images/*
+files/js/*

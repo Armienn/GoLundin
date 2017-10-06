@@ -1,6 +1,7 @@
 package main
 
 import (
+	"html/template"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -43,7 +44,7 @@ func imagesPostHandler(w http.ResponseWriter, r *http.Request, info goserver.Inf
 			}
 		}
 	}
-	w.Write([]byte("Billede gemt"))
+	imagesGetHandler(w, r, info)
 }
 
 type FileData struct {
@@ -72,4 +73,28 @@ func NewFileData(directory string, subDirectory string, user string, scripts ...
 		}
 	}
 	return &FileData{MainData{scripts, user}, images, directories}
+}
+
+func imagesGetHandler(w http.ResponseWriter, r *http.Request, info goserver.Info) {
+	if info.Path == "ny" {
+		showNewImagePage(w, info)
+		return
+	}
+	data := NewFileData("files/images/", info.Path, info.User())
+	temp, err := template.ParseFiles("pages/images.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar-images.html")
+	if err != nil {
+		w.Write([]byte("Fejl: " + err.Error()))
+	} else {
+		temp.Execute(w, data)
+	}
+}
+
+func showNewImagePage(w http.ResponseWriter, info goserver.Info) {
+	data := NewFileData("files/images/", "", info.User())
+	temp, err := template.ParseFiles("pages/images-new.html", "pages/base-start.html", "pages/base-end.html", "pages/header.html", "pages/sidebar-images.html")
+	if err != nil {
+		w.Write([]byte("Fejl: " + err.Error()))
+	} else {
+		temp.Execute(w, data)
+	}
 }
