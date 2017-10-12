@@ -1,36 +1,27 @@
 "use strict"
 
+var state
+var data
+
 window.onload = function () {
+	data = {
+		sectionNav: new SectionNav(),
+		sectionThreads: new SectionThreads(),
+		sectionImages: new SectionImages(),
+		sectionCode: new SectionCode()
+	}
+
+	state = {
+		currentPage: data.sectionThreads
+	}
 
 	function render() {
 		return l("div", {},
-			renderNav(),
-			renderPage()
+			data.sectionNav.render(),
+			state.currentPage.render()
 		)
 	}
 
-	var state = 0
-
 	site.setRenderFunction(render)
 	site.update()
-
-	setInterval(function () {
-		state++;
-		site.update()
-	}, 1000);
-}
-
-function renderNav() {
-	return l("nav",
-		l("h1", "Familien Lundin"),
-		l("ul",
-			l("li", {}, "Hjem"),
-			l("li", {}, "Billeder"),
-			l("li", {}, "Sjov")),
-		l("a", {}, "Log ud")
-	)
-}
-
-function renderPage() {
-	return "Hej du"
 }
