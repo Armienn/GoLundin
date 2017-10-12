@@ -1,6 +1,6 @@
-class SectionImages{
-	render() {
-		return l("nav", "billeder")
+class SectionImages extends Component {
+	renderThis() {
+		return l("div", "billeder")
 	}
 }
 

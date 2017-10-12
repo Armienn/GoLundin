@@ -1,6 +1,6 @@
-class SectionCode{
-	render() {
-		return l("nav", "kode")
+class SectionCode extends Component {
+	renderThis() {
+		return l("div", "kode")
 	}
 }
 

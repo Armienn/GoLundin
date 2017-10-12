@@ -38,32 +38,79 @@ var site = (() => {
 		}
 	}
 
+	var designationCounter = 0
+
 	return {
 		update: () => { update() },
 		setRenderFunction: (r) => { render = r },
-		elementFunction: elementFunction
+		elementFunction: elementFunction,
+		nextDesignation: () => { designationCounter++; return "site-" + designationCounter }
 	}
 })()
 
-/*
-class Section {
-	set render(value) {
-		this.renderFunction = value
+class Component {
+	constructor() {
+		this.designation = site.nextDesignation()
 	}
 
-	get render() {
-		return this.renderSection
+	render() {
+		if (!this.renderThis)
+			throw new Error("Component is missing renderThis()")
+		var tree = this.renderThis()
+		this.markTree(tree)
+		if (!this.element)
+			this.style()
+		return tree
 	}
 
-	renderSection() {
-		if (!this.isChanged)
-			throw new Error("isChanged function needs to be set in a Section")
-		if (!this.renderFunction)
-			throw new Error("render function needs to be set in a Section")
-		var changes = this.isChanged()
-		if (changes)
-			this.tree = this.renderFunction()
-		return this.tree
+	markTree(tree) {
+		if (!(tree instanceof virtualDom.VNode))
+			return
+		if (tree.properties.attributes) {
+			for (var i in tree.properties.attributes)
+				if (i.startsWith("site-"))
+					return
+		}
+		else {
+			tree.properties.attributes = {}
+		}
+		tree.properties.attributes[this.designation] = ""
+		for (var i in tree.children)
+			this.markTree(tree.children[i])
+	}
+
+	style() {
+		if (!this.styleThis)
+			return
+		var styles = this.styleThis()
+		if (!this.element) {
+			this.element = document.createElement("style")
+			document.head.appendChild(this.element)
+		}
+		else {
+			while (this.element.sheet.cssRules.length)
+				this.element.sheet.removeRule(0)
+		}
+		for (var i in styles)
+			this.insertRule(this.element.sheet, this.modifySelector(i), styles[i])
+	}
+
+	insertRule(sheet, key, rule) {
+		if (typeof rule == "string") {
+			if (rule.trim()[0] != "{")
+				rule = "{" + rule + "}"
+			sheet.insertRule(key + rule)
+			return
+		}
+		var index = sheet.insertRule(key + "{}")
+		for (var i in rule)
+			sheet.cssRules[index].style[i] = rule[i]
+	}
+
+	modifySelector(selector) {
+		selector = selector.split(" ").join("[" + this.designation + "] ") + "[" + this.designation + "] "
+		selector = selector.split(",").join("[" + this.designation + "],")
+		return selector
 	}
 }
-*/
+
