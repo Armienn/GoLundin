@@ -49,7 +49,7 @@ var site = (() => {
 
 	function renderNewTree(component) {
 		component.tree = component.renderThis()
-		component.components = []
+		component._components = []
 		markTree(component, component.tree)
 	}
 
@@ -58,7 +58,7 @@ var site = (() => {
 			if (node.component) {
 				if (!path.length)
 					throw new Error("Component must be within some other element")
-				component.components.push({ component: node.component, tree: node.component.render() })
+				component._components.push({ component: node.component, tree: node.component.render() })
 				return true
 			}
 
@@ -76,8 +76,8 @@ var site = (() => {
 
 	function subcomponentsHaveChanged(component) {
 		var changes = false
-		for (var i in component.components) {
-			var subcomponent = component.components[i]
+		for (var i in component._components) {
+			var subcomponent = component._components[i]
 			var tree = subcomponent.component.render()
 			if (tree != subcomponent.tree){
 				subcomponent.tree = tree
