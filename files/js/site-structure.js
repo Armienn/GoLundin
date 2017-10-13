@@ -3,7 +3,8 @@
 function l(tag, options, ...children) {
 	if (typeof options == "string" ||
 		options instanceof virtualDom.VNode ||
-		options instanceof virtualDom.VText
+		options instanceof virtualDom.VText ||
+		options instanceof Component
 	) {
 		children.unshift(options)
 		options = {}
@@ -11,6 +12,12 @@ function l(tag, options, ...children) {
 	for (var i in children)
 		if (children[i] instanceof Array)
 			children.splice(i, 1, ...children[i])
+	for (var i in children)
+		if (children[i] instanceof Component) {
+			var placeholder = virtualDom.h("placeholder", {})
+			placeholder.component = children[i]
+			children[i] = placeholder
+		}
 	return virtualDom.h(tag, options, children)
 }
 
@@ -56,43 +63,87 @@ class Component {
 	render() {
 		if (!this.renderThis)
 			throw new Error("Component is missing renderThis()")
-		var tree = this.renderThis()
-		this.markTree(tree)
-		if (!this.element)
+		if (!this.styleElement || this.styleHasChanged())
 			this.style()
-		return tree
+		if (!this.tree || this.renderHasChanged())
+			this.renderNewTree()
+		this.renderComponents()
+		return this.tree
+	}
+
+	renderHasChanged() {
+		return true
+	}
+
+	renderNewTree() {
+		this.tree = this.renderThis()
+		for (var i in this.components)
+			this.components[i].component.deleteStylesheet()
+		this.components = []
+		this.markTree(this.tree)
 	}
 
 	markTree(tree) {
+		this.traverseTree(tree, (node, path) => {
+			if (node.component) {
+				if (!path.length)
+					throw new Error("Component must be within some other element")
+				this.components.push({ component: node.component, path: path })
+				return true
+			}
+
+			if (node.properties.attributes) {
+				for (var i in node.properties.attributes)
+					if (i.startsWith("site-"))
+						return true
+			}
+			else {
+				node.properties.attributes = {}
+			}
+			node.properties.attributes[this.designation] = ""
+		})
+	}
+
+	traverseTree(tree, callback, path) {
 		if (!(tree instanceof virtualDom.VNode))
 			return
-		if (tree.properties.attributes) {
-			for (var i in tree.properties.attributes)
-				if (i.startsWith("site-"))
-					return
-		}
-		else {
-			tree.properties.attributes = {}
-		}
-		tree.properties.attributes[this.designation] = ""
+		if (!path)
+			path = []
+		var stop = callback(tree, path)
+		if (stop)
+			return
 		for (var i in tree.children)
-			this.markTree(tree.children[i])
+			this.traverseTree(tree.children[i], callback, path.concat([i]))
+	}
+
+	renderComponents() {
+		for (var i in this.components) {
+			var node = this.tree
+			var n = 0
+			for (; n < this.components[i].path.length - 1; n++)
+				node = node.children[this.components[i].path[n]]
+			node.children[this.components[i].path[n]] = this.components[i].component.render()
+		}
 	}
 
 	style() {
 		if (!this.styleThis)
 			return
 		var styles = this.styleThis()
-		if (!this.element) {
-			this.element = document.createElement("style")
-			document.head.appendChild(this.element)
+		if (!this.styleElement) {
+			this.styleElement = document.createElement("style")
+			document.head.appendChild(this.styleElement)
 		}
 		else {
-			while (this.element.sheet.cssRules.length)
-				this.element.sheet.removeRule(0)
+			while (this.styleElement.sheet.cssRules.length)
+				this.styleElement.sheet.removeRule(0)
 		}
 		for (var i in styles)
-			this.insertRule(this.element.sheet, this.modifySelector(i), styles[i])
+			this.insertRule(this.styleElement.sheet, this.modifySelector(i), styles[i])
+	}
+
+	styleHasChanged() {
+		return false
 	}
 
 	insertRule(sheet, key, rule) {
@@ -111,6 +162,11 @@ class Component {
 		selector = selector.split(" ").join("[" + this.designation + "] ") + "[" + this.designation + "] "
 		selector = selector.split(",").join("[" + this.designation + "],")
 		return selector
+	}
+
+	deleteStylesheet() {
+		document.head.removeChild(this.styleElement)
+		this.styleElement = undefined
 	}
 }
 

@@ -3,7 +3,7 @@ class SectionNav extends Component {
 		return l("nav",
 			l("h1", "Familien Lundin"),
 			l("ul",
-				l("li", { onclick: () => { this.selectPage(data.sectionThreads) } }, "Hjem"),
+				l("li", { onclick: () => { this.selectPage(data.sectionThreads) } }, new ButtonNav()),
 				l("li", { onclick: () => { this.selectPage(data.sectionImages) } }, "Billeder"),
 				l("li", { onclick: () => { this.selectPage(data.sectionCode) } }, "Sjov")),
 			l("a", {}, "Log ud")
@@ -44,6 +44,20 @@ class SectionNav extends Component {
 				textAlign: "center",
 				width: "10rem",
 				background: "green"
+			}
+		}
+	}
+}
+
+class ButtonNav extends Component {
+	renderThis() {
+		return l("span", "hey")
+	}
+
+	styleThis() {
+		return {
+			"span": {
+				color: "red"
 			}
 		}
 	}
