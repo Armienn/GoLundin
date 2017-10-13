@@ -6,6 +6,7 @@ var site = (() => {
 	var rootNode
 	var render
 	function update() {
+		currentRender = Date.now()
 		if (!vtree) {
 			vtree = render()
 			rootNode = virtualDom.create(vtree)
@@ -33,9 +34,9 @@ var site = (() => {
 				children.splice(i, 1, ...children[i])
 		for (var i in children)
 			if (children[i] instanceof Component) {
-				var placeholder = virtualDom.h("placeholder", {})
-				placeholder.component = children[i]
-				children[i] = placeholder
+				var node = children[i].render()
+				node.component = children[i]
+				children[i] = node
 			}
 		return virtualDom.h(tag, options, children)
 	}
@@ -57,7 +58,7 @@ var site = (() => {
 			if (node.component) {
 				if (!path.length)
 					throw new Error("Component must be within some other element")
-				component.components.push({ component: node.component, path: path })
+				component.components.push({ component: node.component, tree: node.component.render() })
 				return true
 			}
 
@@ -73,14 +74,17 @@ var site = (() => {
 		})
 	}
 
-	function renderComponents(component) {
+	function subcomponentsHaveChanged(component) {
+		var changes = false
 		for (var i in component.components) {
-			var node = component.tree
-			var n = 0
-			for (; n < component.components[i].path.length - 1; n++)
-				node = node.children[component.components[i].path[n]]
-			node.children[component.components[i].path[n]] = component.components[i].component.render()
+			var subcomponent = component.components[i]
+			var tree = subcomponent.component.render()
+			if (tree != subcomponent.tree){
+				subcomponent.tree = tree
+				changes = true
+			}
 		}
+		return changes
 	}
 
 	function traverseTree(tree, callback, path) {
@@ -114,6 +118,7 @@ var site = (() => {
 	}
 
 	var stylesheets = {}
+	var currentRender
 
 	class Component {
 		constructor() {
@@ -123,11 +128,13 @@ var site = (() => {
 		render() {
 			if (!this.renderThis)
 				throw new Error("Component is missing renderThis()")
+			if(this.lastRender == currentRender)
+				return this.tree
 			if (!stylesheets[this.designation] || this.constructor.styleHasChanged())
 				this.style()
-			if (!this.tree || this.renderHasChanged())
+			if (!this.tree || this.renderHasChanged() || subcomponentsHaveChanged(this))
 				renderNewTree(this)
-			renderComponents(this)
+			this.lastRender = currentRender
 			return this.tree
 		}
 

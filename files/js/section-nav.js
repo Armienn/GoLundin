@@ -1,13 +1,26 @@
 class SectionNav extends Component {
+	constructor() {
+		super()
+		this.buttons = {
+			threads: new ButtonNav("Hjem", () => data.sectionThreads),
+			images: new ButtonNav("Billeder", () => data.sectionImages),
+			code: new ButtonNav("Sjov", () => data.sectionCode)
+		}
+	}
+
 	renderThis() {
 		return l("nav",
 			l("h1", "Familien Lundin"),
 			l("ul",
-				new ButtonNav("Hjem", data.sectionThreads),
-				new ButtonNav("Billeder", data.sectionImages),
-				new ButtonNav("Sjov", data.sectionCode)),
-			l("a", {}, "Log ud")
+				this.buttons.threads,
+				this.buttons.images,
+				this.buttons.code),
+			l("a", {}, l("div", "Log ud"))
 		)
+	}
+
+	renderHasChanged() {
+		return false
 	}
 
 	static styleThis() {
@@ -18,17 +31,14 @@ class SectionNav extends Component {
 				fontWeight: "bold",
 				fontSize: "1.2rem",
 			},
-
 			"h1": {
 				fontSize: "2rem",
 				flexGrow: 0
 			},
-
 			"ul": {
 				display: "flex",
 				flexGrow: 1
 			},
-
 			"a": {
 				flexGrow: 0
 			}
@@ -37,18 +47,16 @@ class SectionNav extends Component {
 }
 
 class ButtonNav extends Component {
-	constructor(text, destination){
+	constructor(text, destination) {
 		super()
 		this.text = text
 		this.destination = destination
 	}
 
-	renderHasChanged(){
-		return false
-	}
-
 	renderThis() {
-		return l("li", { onclick: () => { this.selectPage(this.destination) } }, this.text)
+		return l(state.currentPage == this.destination() ? "li.selected" : "li", {
+			onclick: () => { this.selectPage(this.destination()) }
+		}, this.text)
 	}
 
 	static styleThis() {
@@ -59,6 +67,9 @@ class ButtonNav extends Component {
 				textAlign: "center",
 				width: "10rem",
 				background: "green"
+			},
+			".selected": {
+				background: "yellow"
 			}
 		}
 	}
