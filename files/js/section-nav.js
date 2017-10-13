@@ -3,16 +3,11 @@ class SectionNav extends Component {
 		return l("nav",
 			l("h1", "Familien Lundin"),
 			l("ul",
-				l("li", { onclick: () => { this.selectPage(data.sectionThreads) } }, new ButtonNav()),
-				l("li", { onclick: () => { this.selectPage(data.sectionImages) } }, "Billeder"),
-				l("li", { onclick: () => { this.selectPage(data.sectionCode) } }, "Sjov")),
+				new ButtonNav("Hjem", data.sectionThreads),
+				new ButtonNav("Billeder", data.sectionImages),
+				new ButtonNav("Sjov", data.sectionCode)),
 			l("a", {}, "Log ud")
 		)
-	}
-
-	selectPage(page) {
-		state.currentPage = page
-		site.update()
 	}
 
 	styleThis() {
@@ -36,8 +31,24 @@ class SectionNav extends Component {
 
 			"a": {
 				flexGrow: 0
-			},
+			}
+		}
+	}
+}
 
+class ButtonNav extends Component {
+	constructor(text, destination){
+		super()
+		this.text = text
+		this.destination = destination
+	}
+
+	renderThis() {
+		return l("li", { onclick: () => { this.selectPage(this.destination) } }, this.text)
+	}
+
+	styleThis() {
+		return {
 			"li": {
 				height: "2rem",
 				lineHeight: "2rem",
@@ -47,19 +58,10 @@ class SectionNav extends Component {
 			}
 		}
 	}
-}
 
-class ButtonNav extends Component {
-	renderThis() {
-		return l("span", "hey")
-	}
-
-	styleThis() {
-		return {
-			"span": {
-				color: "red"
-			}
-		}
+	selectPage(page) {
+		state.currentPage = page
+		site.update()
 	}
 }
 
