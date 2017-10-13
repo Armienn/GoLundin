@@ -10,7 +10,7 @@ class SectionNav extends Component {
 		)
 	}
 
-	styleThis() {
+	static styleThis() {
 		return {
 			"nav": {
 				padding: "1rem",
@@ -47,7 +47,7 @@ class ButtonNav extends Component {
 		return l("li", { onclick: () => { this.selectPage(this.destination) } }, this.text)
 	}
 
-	styleThis() {
+	static styleThis() {
 		return {
 			"li": {
 				height: "2rem",

@@ -136,9 +136,9 @@ var site = (() => {
 		}
 
 		style() {
-			if (!this.styleThis)
+			if (!this.constructor.styleThis)
 				return
-			var styles = this.styleThis()
+			var styles = this.constructor.styleThis()
 			if (!stylesheets[this.designation]) {
 				stylesheets[this.designation] = document.createElement("style")
 				document.head.appendChild(stylesheets[this.designation])
