@@ -43,6 +43,10 @@ class ButtonNav extends Component {
 		this.destination = destination
 	}
 
+	renderHasChanged(){
+		return false
+	}
+
 	renderThis() {
 		return l("li", { onclick: () => { this.selectPage(this.destination) } }, this.text)
 	}

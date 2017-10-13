@@ -123,7 +123,7 @@ var site = (() => {
 		render() {
 			if (!this.renderThis)
 				throw new Error("Component is missing renderThis()")
-			if (!stylesheets[this.designation] || this.styleHasChanged())
+			if (!stylesheets[this.designation] || this.constructor.styleHasChanged())
 				this.style()
 			if (!this.tree || this.renderHasChanged())
 				renderNewTree(this)
@@ -151,7 +151,7 @@ var site = (() => {
 				insertRule(stylesheets[this.designation].sheet, modifySelector(i, this.designation), styles[i])
 		}
 
-		styleHasChanged() {
+		static styleHasChanged() {
 			return false
 		}
 	}
