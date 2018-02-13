@@ -39,12 +39,26 @@ function postRequest(url, parameters, callback) {
 class Core {
 	constructor() {
 		this.sections = ["Generelt", "Diverse"]
-		this.currentSection = "Generelt"
+		this._currentSection = "Generelt"
+		this._currentThreads = []
 		this.threads = []
 	}
 
-	currentThreads() {
-		return this.threads.filter(e => e.section == this.currentSection)
+	get currentSection(){
+		return this._currentSection
+	}
+	set currentSection(value){
+		this._currentSection = value
+		this._currentThreads = this.threads.filter(e => e.section == this.currentSection)
+	}
+
+	get currentThreads() {
+		return this._currentThreads
+	}
+
+	setThreads(threads){
+		this.threads = threads
+		this._currentThreads = this.threads.filter(e => e.section == this.currentSection)
 	}
 }
 var core = new Core()
@@ -62,7 +76,7 @@ class Thread {
 	}
 }
 
-core.threads = [
+core.setThreads([
 	new Thread({
 		id: 1,
 		title: "Test besked",
@@ -70,7 +84,15 @@ core.threads = [
 		author: "Kristjan",
 		section: "Diverse",
 		time: "blub",
-		responses: []
+		responses: [new Thread({
+			id: 1,
+			title: "Test besked",
+			mainMessage: "Her er en lille test besked. Blablabla.\nAzg nazg thrakatul.",
+			author: "Kristjan",
+			section: "Diverse",
+			time: "blub",
+			responses: []
+		})]
 	}),
 	new Thread({
 		id: 2,
@@ -90,4 +112,4 @@ core.threads = [
 		time: "blub",
 		responses: []
 	})
-]
+])
