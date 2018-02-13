@@ -7,13 +7,12 @@ class SectionNav extends Component {
 				buttonCode: new ButtonNav("Sjov", data.sectionCode)
 			}
 		}
-		return l("nav",
-			l("h1", "Familien Lundin"),
+		return l("div",
 			l("ul",
 				this.components.buttonThreads,
 				this.components.buttonImages,
 				this.components.buttonCode),
-			l("a", {}, l("div", "Log ud"))
+			l("a", {}, "Log ud")
 		)
 	}
 
@@ -23,22 +22,19 @@ class SectionNav extends Component {
 
 	static styleThis() {
 		return {
-			"nav": {
-				padding: "1rem",
+			"div": {
+				padding: "0.5rem",
 				display: "flex",
 				fontWeight: "bold",
 				fontSize: "1.2rem",
-			},
-			"h1": {
-				fontSize: "2rem",
-				flexGrow: 0
 			},
 			"ul": {
 				display: "flex",
 				flexGrow: 1
 			},
 			"a": {
-				flexGrow: 0
+				flexGrow: 0,
+				cursor: "pointer"
 			}
 		}
 	}
@@ -64,10 +60,15 @@ class ButtonNav extends Component {
 				lineHeight: "2rem",
 				textAlign: "center",
 				width: "10rem",
-				background: "green"
+				cursor: "pointer",
+				transition: "0.3s"
+			},
+			"li:hover": {
+				background: "#4b9a8c",
+				transition: "0.3s"
 			},
 			".selected": {
-				background: "yellow"
+				background: "#61af4e"
 			}
 		}
 	}

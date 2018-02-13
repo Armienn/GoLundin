@@ -1,6 +1,5 @@
 "use strict"
 
-
 var site = (() => {
 	var vtree
 	var rootNode
@@ -178,4 +177,3 @@ var site = (() => {
 
 var l = site.l
 var Component = site.Component
-
